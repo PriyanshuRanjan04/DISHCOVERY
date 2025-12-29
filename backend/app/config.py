@@ -5,7 +5,7 @@ class Settings(BaseSettings):
     
     # MongoDB
     mongodb_uri: "mongodb+srv://priyanshuranjan11260_db_user:Golu123@receipe.9oiipbq.mongodb.net/?appName=receipe"
-    mongodb_db_name: str = "recipe_ai_db"
+    mongodb_db_name: str = "receipe"
     
     # Clerk
     clerk_secret_key: "••••••••••••••••••••••••••••••••••••••••••••••••••"
