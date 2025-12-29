@@ -4,7 +4,7 @@ class Settings(BaseSettings):
     """Application settings loaded from environment variables"""
     
     # MongoDB
-    mongodb_uri: "mongodb+srv://priyanshuranjan11260_db_user:golu321@cluster0.4ywrrj9.mongodb.net/?appName=Cluster0"
+    mongodb_uri: "mongodb+srv://priyanshuranjan11260_db_user:Golu123@receipe.9oiipbq.mongodb.net/?appName=receipe"
     mongodb_db_name: str = "recipe_ai_db"
     
     # Clerk
