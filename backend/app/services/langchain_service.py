@@ -14,6 +14,7 @@ class LangChainService:
             model="gemini-pro",
             google_api_key=settings.gemini_api_key,
             temperature=0.7,
+            convert_system_message_to_human=True,
         )
     
     async def generate_recipe(self, query: str, servings: int = 4) -> dict:
