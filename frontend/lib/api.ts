@@ -1,6 +1,7 @@
 import axios, { InternalAxiosRequestConfig } from 'axios'
 
-// In production, we use the Vercel rewrite proxy to avoid CORS issues and improve reliability
+// In production, we use the Vercel rewrite proxy to avoid CORS issues
+// However, we maintain the ability to use the direct URL if needed via environment variables
 const API_URL = process.env.NODE_ENV === 'production'
     ? '/api/proxy'
     : (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000').replace(/\/$/, '');
@@ -8,7 +9,7 @@ const API_URL = process.env.NODE_ENV === 'production'
 // Create axios instance with default config
 const apiClient = axios.create({
     baseURL: API_URL,
-    timeout: 30000, // 30 seconds
+    timeout: 60000, // Increased to 60 seconds to handle slow cold starts and AI generation
     headers: {
         'Content-Type': 'application/json',
     },
@@ -29,6 +30,11 @@ export const recipeAPI = {
 
     getPopular: async () => {
         const response = await apiClient.get('/api/recipes/popular')
+        return response.data
+    },
+
+    getStatus: async (query: string) => {
+        const response = await apiClient.get(`/api/recipes/status/${encodeURIComponent(query)}`)
         return response.data
     },
 

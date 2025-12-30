@@ -19,6 +19,9 @@ class LangChainService:
     
     async def generate_recipe(self, query: str, servings: int = 4) -> dict:
         """Generate a recipe based on user query using LLM"""
+        import time
+        start_time = time.time()
+        print(f"DEBUG: Starting recipe generation for '{query}'...")
         
         prompt = ChatPromptTemplate.from_messages([
             ("system", """You are an expert chef and recipe creator. Generate detailed, accurate recipes with precise measurements.
@@ -42,20 +45,29 @@ Be creative but practical. Include cooking times, difficulty levels, and helpful
         ])
         
         chain = prompt | self.llm
-        response = chain.invoke({"query": query, "servings": servings})
         
-        # Extract JSON from response
-        content = response.content
-        
-        # Try to find JSON in the response
-        json_match = re.search(r'\{.*\}', content, re.DOTALL)
-        if json_match:
-            recipe_data = json.loads(json_match.group())
-        else:
-            # Fallback: try to parse entire content
-            recipe_data = json.loads(content)
-        
-        return recipe_data
+        try:
+            print("DEBUG: Invoking Gemini...")
+            invoke_start = time.time()
+            response = chain.invoke({"query": query, "servings": servings})
+            print(f"DEBUG: Gemini responded in {time.time() - invoke_start:.2f} seconds.")
+            
+            # Extract JSON from response
+            content = response.content
+            
+            # Try to find JSON in the response
+            json_match = re.search(r'\{.*\}', content, re.DOTALL)
+            if json_match:
+                recipe_data = json.loads(json_match.group())
+            else:
+                # Fallback: try to parse entire content
+                recipe_data = json.loads(content)
+            
+            print(f"DEBUG: Total generation time: {time.time() - start_time:.2f} seconds.")
+            return recipe_data
+        except Exception as e:
+            print(f"ERROR in AI generation: {str(e)}")
+            raise e
     
     async def get_ingredient_alternatives(self, ingredient: str, recipe_context: str) -> list:
         """Get alternative ingredients using LLM"""

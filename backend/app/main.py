@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from .config import settings
-from .database import connect_to_mongo, close_mongo_connection
+from .database import connect_to_mongo, close_mongo_connection, get_database
 from .routes import recipes, users, blog
 
 app = FastAPI(
@@ -47,4 +47,17 @@ async def root():
 
 @app.get("/health")
 async def health_check():
-    return {"status": "healthy"}
+    health_status = {"status": "healthy", "mongodb": "unknown"}
+    try:
+        db = get_database()
+        if db is not None:
+            # Try a simple command to check connectivity
+            await db.command("ping")
+            health_status["mongodb"] = "connected"
+        else:
+            health_status["mongodb"] = "not_initialized"
+    except Exception as e:
+        health_status["mongodb"] = f"error: {str(e)}"
+        health_status["status"] = "unhealthy"
+        
+    return health_status

@@ -14,25 +14,54 @@ export default function SearchPage() {
     const [error, setError] = useState('')
 
     useEffect(() => {
+        let isStopped = false
+        let pollTimer: NodeJS.Timeout
+
         const fetchRecipe = async () => {
             if (!query) return
             try {
                 setLoading(true)
-                const data = await recipeAPI.search(query)
-                if (data.success) {
-                    setRecipe(data.recipe)
+                const initialRes = await recipeAPI.search(query)
+
+                if (initialRes.status === 'completed') {
+                    setRecipe(initialRes.recipe)
+                    setLoading(false)
                 } else {
-                    setError('Failed to generate recipe')
+                    // Start polling
+                    const poll = async () => {
+                        if (isStopped) return
+                        try {
+                            const statusRes = await recipeAPI.getStatus(query)
+                            if (statusRes.status === 'completed') {
+                                setRecipe(statusRes.recipe)
+                                setLoading(false)
+                            } else if (statusRes.status === 'error') {
+                                setError(statusRes.error || 'Failed to generate recipe')
+                                setLoading(false)
+                            } else {
+                                // Continue polling
+                                pollTimer = setTimeout(poll, 2000)
+                            }
+                        } catch (err) {
+                            setError('Lost connection while cooking...')
+                            setLoading(false)
+                        }
+                    }
+                    poll()
                 }
             } catch (err: any) {
                 console.error("Search error:", err)
-                setError(err.response?.data?.detail || err.message || 'Something went wrong. Please check your connection.')
-            } finally {
+                setError(err.response?.data?.detail || err.message || 'Something went wrong.')
                 setLoading(false)
             }
         }
 
         fetchRecipe()
+
+        return () => {
+            isStopped = true
+            clearTimeout(pollTimer)
+        }
     }, [query])
 
     if (loading) {
