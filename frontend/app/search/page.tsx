@@ -89,18 +89,27 @@ export default function SearchPage() {
                 <div className="text-center space-y-4 max-w-lg">
                     <h2 className="text-2xl font-bold text-red-500">Oops!</h2>
                     <div className="bg-red-50 p-4 rounded-lg text-left">
-                        <p className="text-red-800 font-mono text-sm break-all">{error}</p>
+                        <p className="text-red-800 font-mono text-sm break-all">
+                            {error.includes('timeout')
+                                ? 'The server is taking a bit long to wake up. This is normal for the first request.'
+                                : error}
+                        </p>
                     </div>
-                    <p className="text-gray-600 dark:text-gray-400">
-                        Please try again or check the console for more details.
-                    </p>
-                    <Link
-                        href="/"
-                        className="inline-flex items-center px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90"
-                    >
-                        <ArrowLeft className="w-4 h-4 mr-2" />
-                        Back to Home
-                    </Link>
+                    <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                        <button
+                            onClick={() => window.location.reload()}
+                            className="inline-flex items-center px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-all shadow-md"
+                        >
+                            Retry Search
+                        </button>
+                        <Link
+                            href="/"
+                            className="inline-flex items-center px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-all"
+                        >
+                            <ArrowLeft className="w-4 h-4 mr-2" />
+                            Back to Home
+                        </Link>
+                    </div>
                 </div>
             </div>
         )

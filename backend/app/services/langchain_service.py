@@ -45,7 +45,7 @@ Structure:
         try:
             print("DEBUG: Invoking Gemini...")
             invoke_start = time.time()
-            response = chain.invoke({"query": query, "servings": servings})
+            response = await chain.ainvoke({"query": query, "servings": servings})
             print(f"DEBUG: Gemini responded in {time.time() - invoke_start:.2f} seconds.")
             
             # Extract JSON from response
@@ -84,7 +84,7 @@ Provide practical alternatives that maintain flavor and texture. Always respond 
         ])
         
         chain = prompt | self.llm
-        response = chain.invoke({"ingredient": ingredient, "context": recipe_context})
+        response = await chain.ainvoke({"ingredient": ingredient, "context": recipe_context})
         
         # Extract JSON from response
         content = response.content

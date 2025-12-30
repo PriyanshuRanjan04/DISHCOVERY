@@ -14,7 +14,9 @@ async def connect_to_mongo():
     # For mongodb+srv strings, certifi is best used as a fallback if system certs fail
     db.client = AsyncIOMotorClient(
         settings.mongodb_uri,
-        tlsCAFile=certifi.where()
+        tlsCAFile=certifi.where(),
+        connectTimeoutMS=10000,
+        serverSelectionTimeoutMS=10000
     )
     db.db = db.client[settings.mongodb_db_name]
     print("Connected to MongoDB!")
