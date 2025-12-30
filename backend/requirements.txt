@@ -15,3 +15,4 @@ resend==0.7.0
 reportlab==4.1.0
 Pillow==10.1.0
 certifi==2024.2.2
+dnspython==2.6.1

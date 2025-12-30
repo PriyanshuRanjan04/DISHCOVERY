@@ -11,10 +11,10 @@ db = Database()
 async def connect_to_mongo():
     """Connect to MongoDB"""
     print("Connecting to MongoDB...")
+    # For mongodb+srv strings, certifi is best used as a fallback if system certs fail
     db.client = AsyncIOMotorClient(
         settings.mongodb_uri,
-        tlsCAFile=certifi.where(),
-        tls=True
+        tlsCAFile=certifi.where()
     )
     db.db = db.client[settings.mongodb_db_name]
     print("Connected to MongoDB!")
