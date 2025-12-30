@@ -22,13 +22,12 @@ class LangChainService:
         except Exception as e:
             print(f"DEBUG: Could not list models: {str(e)}")
 
-        # Initialize Gemini with a specific stable version
-        # Some environments prefer flash-001 or flash-002 explicitly
+        # Initialize Gemini with the newest available model from the diagnostic
+        # Using gemini-2.5-flash which is confirmed available
         self.llm = ChatGoogleGenerativeAI(
-            model="gemini-1.5-flash-002",
+            model="gemini-2.5-flash",
             google_api_key=settings.gemini_api_key,
-            temperature=0.7,
-            client_options={"api_version": "v1"}
+            temperature=0.7
         )
     
     async def generate_recipe(self, query: str, servings: int = 4) -> dict:
