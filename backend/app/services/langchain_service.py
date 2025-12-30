@@ -12,11 +12,12 @@ class LangChainService:
     """Service for LangChain LLM operations"""
     
     def __init__(self):
-        # Initialize Gemini with the most stable model name
+        # Initialize Gemini with explicit v1 API version via client_options
         self.llm = ChatGoogleGenerativeAI(
-            model="models/gemini-1.5-flash",
+            model="gemini-1.5-flash",
             google_api_key=settings.gemini_api_key,
-            temperature=0.7
+            temperature=0.7,
+            client_options={"api_version": "v1"}
         )
     
     async def generate_recipe(self, query: str, servings: int = 4) -> dict:
