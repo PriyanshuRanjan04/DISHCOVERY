@@ -23,6 +23,11 @@ export const recipeAPI = {
         return response.data
     },
 
+    getPopular: async () => {
+        const response = await apiClient.get('/api/recipes/popular')
+        return response.data
+    },
+
     getAlternatives: async (ingredient: string, recipeContext: string) => {
         const response = await apiClient.post('/api/recipes/alternatives', {
             ingredient,
@@ -54,28 +59,39 @@ export const recipeAPI = {
 
 // User API calls
 export const userAPI = {
-    getProfile: async () => {
-        const response = await apiClient.get('/api/users/me')
+    getProfile: async (userId: string) => {
+        const response = await apiClient.get('/api/users/me', {
+            params: { user_id: userId }
+        })
         return response.data
     },
 
-    getHistory: async () => {
-        const response = await apiClient.get('/api/users/history')
+    getHistory: async (userId: string) => {
+        const response = await apiClient.get('/api/users/history', {
+            params: { user_id: userId }
+        })
         return response.data
     },
 
-    saveRecipe: async (recipe: any) => {
-        const response = await apiClient.post('/api/users/save-recipe', { recipe })
+    saveRecipe: async (userId: string, recipe: any) => {
+        const response = await apiClient.post('/api/users/save-recipe', {
+            user_id: userId,
+            recipe
+        })
         return response.data
     },
 
-    getSavedRecipes: async () => {
-        const response = await apiClient.get('/api/users/saved-recipes')
+    getSavedRecipes: async (userId: string) => {
+        const response = await apiClient.get('/api/users/saved-recipes', {
+            params: { user_id: userId }
+        })
         return response.data
     },
 
-    deleteSavedRecipe: async (recipeId: string) => {
-        const response = await apiClient.delete(`/api/users/saved-recipes/${recipeId}`)
+    deleteSavedRecipe: async (userId: string, recipeId: string) => {
+        const response = await apiClient.delete(`/api/users/saved-recipes/${recipeId}`, {
+            params: { user_id: userId }
+        })
         return response.data
     },
 }

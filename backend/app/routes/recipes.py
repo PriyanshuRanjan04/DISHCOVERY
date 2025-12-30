@@ -125,3 +125,48 @@ async def email_recipe(request: EmailRecipeRequest):
         
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Email sending failed: {str(e)}")
+
+@router.get("/popular")
+async def get_popular_recipes():
+    """Get popular recipes (curated)"""
+    return {
+        "success": True,
+        "recipes": [
+            {
+                "title": "Classic Margherita Pizza",
+                "description": "Authentic Neapolitan pizza with fresh basil and mozzarella.",
+                "image": "https://images.unsplash.com/photo-1574071318508-1cdbab80d002?w=800&q=80",
+                "cooking_time": 30,
+                "servings": 4,
+                "difficulty": "medium",
+                "cuisine": "Italian"
+            },
+            {
+                "title": "Creamy Mushroom Risotto",
+                "description": "Rich and creamy Italian rice dish with wild mushrooms.",
+                "image": "https://images.unsplash.com/photo-1476124369491-e7addf5db371?w=800&q=80",
+                "cooking_time": 45,
+                "servings": 4,
+                "difficulty": "hard",
+                "cuisine": "Italian"
+            },
+            {
+                "title": "Spicy Chicken Curry",
+                "description": "Aromatic Indian curry with tender chicken pieces.",
+                "image": "https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?w=800&q=80",
+                "cooking_time": 40,
+                "servings": 4,
+                "difficulty": "medium",
+                "cuisine": "Indian"
+            },
+            {
+                "title": "Japanese Ramen Bowl",
+                "description": "Comforting noodle soup with rich broth and toppings.",
+                "image": "https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=800&q=80",
+                "cooking_time": 60,
+                "servings": 2,
+                "difficulty": "hard",
+                "cuisine": "Japanese"
+            }
+        ]
+    }

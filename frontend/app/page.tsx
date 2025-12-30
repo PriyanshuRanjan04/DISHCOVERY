@@ -1,8 +1,38 @@
+'use client'
+
 import Link from 'next/link'
 import { UserButton, SignedIn, SignedOut } from '@clerk/nextjs'
 import { Search, ChefHat, BookOpen, History, Heart, Sparkles } from 'lucide-react'
+import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
+import { recipeAPI } from '@/lib/api'
 
 export default function HomePage() {
+    const [query, setQuery] = useState('')
+    const [popularRecipes, setPopularRecipes] = useState<any[]>([])
+    const router = useRouter()
+
+    useEffect(() => {
+        const fetchPopular = async () => {
+            try {
+                const data = await recipeAPI.getPopular()
+                if (data.success) {
+                    setPopularRecipes(data.recipes)
+                }
+            } catch (e) {
+                console.error("Failed to fetch popular recipes", e)
+            }
+        }
+        fetchPopular()
+    }, [])
+
+    const handleSearch = (e: React.FormEvent) => {
+        e.preventDefault()
+        if (query.trim()) {
+            router.push(`/search?q=${encodeURIComponent(query)}`)
+        }
+    }
+
     return (
         <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-green-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
             {/* Navigation */}
@@ -80,17 +110,22 @@ export default function HomePage() {
 
                     {/* Search Bar */}
                     <div className="max-w-3xl mx-auto mt-12">
-                        <div className="relative">
+                        <form onSubmit={handleSearch} className="relative">
                             <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-6 h-6 text-gray-400" />
                             <input
                                 type="text"
+                                value={query}
+                                onChange={(e) => setQuery(e.target.value)}
                                 placeholder="What would you like to cook today? (e.g., 'Italian pasta for 4 people')"
-                                className="w-full pl-16 pr-6 py-5 rounded-2xl border-2 border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-400 focus:border-primary focus:ring-4 focus:ring-primary/20 outline-none transition-all text-lg"
+                                className="w-full pl-16 pr-32 py-5 rounded-2xl border-2 border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-400 focus:border-primary focus:ring-4 focus:ring-primary/20 outline-none transition-all text-lg"
                             />
-                            <button className="absolute right-2 top-1/2 -translate-y-1/2 px-6 py-3 bg-gradient-to-r from-primary to-accent text-white font-semibold rounded-xl hover:scale-105 transition-transform">
+                            <button
+                                type="submit"
+                                className="absolute right-2 top-1/2 -translate-y-1/2 px-6 py-3 bg-gradient-to-r from-primary to-accent text-white font-semibold rounded-xl hover:scale-105 transition-transform"
+                            >
                                 Search
                             </button>
-                        </div>
+                        </form>
                     </div>
                 </div>
 
@@ -113,7 +148,7 @@ export default function HomePage() {
                     />
                 </div>
 
-                {/* Random Food Display Placeholder */}
+                {/* Popular Recipes Section */}
                 <div className="mt-24">
                     <div className="flex justify-between items-center mb-8">
                         <h2 className="text-3xl font-bold text-gray-900 dark:text-white">
@@ -125,9 +160,14 @@ export default function HomePage() {
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                        {[1, 2, 3, 4].map((i) => (
-                            <RecipeCardPlaceholder key={i} />
-                        ))}
+                        {popularRecipes.length > 0 ? (
+                            popularRecipes.map((recipe, i) => (
+                                <RecipeCard key={i} recipe={recipe} />
+                            ))
+                        ) : (
+                            // Show placeholders while loading
+                            [1, 2, 3, 4].map((i) => <RecipeCardPlaceholder key={i} />)
+                        )}
                     </div>
                 </div>
             </section>
@@ -147,15 +187,39 @@ function FeatureCard({ icon, title, description }: { icon: React.ReactNode; titl
     )
 }
 
+function RecipeCard({ recipe }: { recipe: any }) {
+    return (
+        <div className="glass rounded-2xl overflow-hidden card-hover cursor-pointer group h-full flex flex-col">
+            <div className="h-48 relative overflow-hidden shrink-0">
+                <img
+                    src={recipe.image}
+                    alt={recipe.title}
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                />
+                <div className="absolute top-2 right-2 bg-white/90 backdrop-blur px-2 py-1 rounded-lg text-xs font-semibold text-gray-700">
+                    {recipe.cooking_time} min
+                </div>
+            </div>
+            <div className="p-4 flex flex-col flex-grow">
+                <h3 className="font-bold text-gray-900 dark:text-white mb-1 truncate">{recipe.title}</h3>
+                <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-2 mb-3 flex-grow">{recipe.description}</p>
+                <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400 mt-auto">
+                    <span className="capitalize px-2 py-1 bg-gray-100 dark:bg-gray-800 rounded-full">{recipe.cuisine}</span>
+                    <span className="capitalize px-2 py-1 bg-gray-100 dark:bg-gray-800 rounded-full">{recipe.difficulty}</span>
+                </div>
+            </div>
+        </div>
+    )
+}
+
 function RecipeCardPlaceholder() {
     return (
-        <div className="glass rounded-2xl overflow-hidden card-hover cursor-pointer">
-            <div className="h-48 bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center">
-                <ChefHat className="w-16 h-16 text-primary/40" />
-            </div>
+        <div className="glass rounded-2xl overflow-hidden card-hover cursor-pointer animate-pulse">
+            <div className="h-48 bg-gray-200 dark:bg-gray-700" />
             <div className="p-4">
-                <h3 className="font-bold text-gray-900 dark:text-white mb-2">Recipe Name</h3>
-                <p className="text-sm text-gray-600 dark:text-gray-400">Click search to discover recipes!</p>
+                <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4 mb-2" />
+                <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded w-full mb-3" />
+                <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded w-1/2" />
             </div>
         </div>
     )
