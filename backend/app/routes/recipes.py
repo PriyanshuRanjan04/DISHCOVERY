@@ -30,17 +30,35 @@ class EmailRecipeRequest(BaseModel):
 
 @router.post("/search")
 async def search_recipes(request: SearchRequest):
-    """Search for recipes using AI"""
+    """Search for recipes using AI with caching"""
     try:
+        db = get_database()
+        normalized_query = request.query.lower().strip()
+        
+        # Check cache
+        cached_recipe = await db.recipe_cache.find_one({"query": normalized_query})
+        if cached_recipe:
+            return {
+                "success": True,
+                "recipe": cached_recipe["recipe_data"],
+                "cached": True
+            }
+
         # Generate recipe using LangChain
         recipe_data = await langchain_service.generate_recipe(
             query=request.query,
             servings=request.servings
         )
         
+        # Cache the result
+        await db.recipe_cache.insert_one({
+            "query": normalized_query,
+            "recipe_data": recipe_data,
+            "created_at": datetime.utcnow()
+        })
+        
         # Save to search history if user_id provided
         if request.user_id:
-            db = get_database()
             history_entry = SearchHistory(
                 user_id=request.user_id,
                 query=request.query,
@@ -51,7 +69,8 @@ async def search_recipes(request: SearchRequest):
         
         return {
             "success": True,
-            "recipe": recipe_data
+            "recipe": recipe_data,
+            "cached": False
         }
         
     except Exception as e:

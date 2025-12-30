@@ -11,7 +11,7 @@ class LangChainService:
     def __init__(self):
         # Initialize Gemini
         self.llm = ChatGoogleGenerativeAI(
-            model="gemini-pro",
+            model="gemini-1.5-flash",
             google_api_key=settings.gemini_api_key,
             temperature=0.7,
             convert_system_message_to_human=True,
