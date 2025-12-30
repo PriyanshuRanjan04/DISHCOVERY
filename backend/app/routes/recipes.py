@@ -31,26 +31,32 @@ class EmailRecipeRequest(BaseModel):
 @router.post("/search")
 async def search_recipes(request: SearchRequest):
     """Search for recipes using AI with caching"""
+    print(f"DEBUG: Search request received for query: {request.query}")
     try:
         db = get_database()
         normalized_query = request.query.lower().strip()
         
         # Check cache
+        print("DEBUG: Checking cache...")
         cached_recipe = await db.recipe_cache.find_one({"query": normalized_query})
         if cached_recipe:
+            print("DEBUG: Cache hit!")
             return {
                 "success": True,
                 "recipe": cached_recipe["recipe_data"],
                 "cached": True
             }
 
+        print("DEBUG: Cache miss. Calling Gemini...")
         # Generate recipe using LangChain
         recipe_data = await langchain_service.generate_recipe(
             query=request.query,
             servings=request.servings
         )
+        print("DEBUG: Gemini response received successfully.")
         
         # Cache the result
+        print("DEBUG: Caching result...")
         await db.recipe_cache.insert_one({
             "query": normalized_query,
             "recipe_data": recipe_data,
@@ -59,6 +65,7 @@ async def search_recipes(request: SearchRequest):
         
         # Save to search history if user_id provided
         if request.user_id:
+            print(f"DEBUG: Saving to history for user: {request.user_id}")
             history_entry = SearchHistory(
                 user_id=request.user_id,
                 query=request.query,
@@ -74,6 +81,7 @@ async def search_recipes(request: SearchRequest):
         }
         
     except Exception as e:
+        print(f"ERROR: Search failed: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Recipe generation failed: {str(e)}")
 
 @router.post("/alternatives")

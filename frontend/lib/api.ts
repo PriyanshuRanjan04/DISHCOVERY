@@ -1,7 +1,9 @@
 import axios, { InternalAxiosRequestConfig } from 'axios'
 
-// Use proxy in production if possible, otherwise direct Render URL
-const API_URL = (process.env.NEXT_PUBLIC_API_URL || '').replace(/\/$/, '');
+// In production, we use the Vercel rewrite proxy to avoid CORS issues and improve reliability
+const API_URL = process.env.NODE_ENV === 'production'
+    ? '/api/proxy'
+    : (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000').replace(/\/$/, '');
 
 // Create axios instance with default config
 const apiClient = axios.create({
