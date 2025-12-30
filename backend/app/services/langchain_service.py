@@ -1,6 +1,6 @@
 from langchain_google_genai import ChatGoogleGenerativeAI
-from langchain.prompts import ChatPromptTemplate
-from langchain.chains import LLMChain
+from langchain_core.prompts import ChatPromptTemplate
+# We use the pipe operator (prompt | llm) so LLMChain is no longer needed
 from ..config import settings
 import json
 import re
