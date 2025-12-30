@@ -1,10 +1,12 @@
 import axios, { InternalAxiosRequestConfig } from 'axios'
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+// Use proxy in production if possible, otherwise direct Render URL
+const API_URL = (process.env.NEXT_PUBLIC_API_URL || '').replace(/\/$/, '');
 
 // Create axios instance with default config
 const apiClient = axios.create({
     baseURL: API_URL,
+    timeout: 30000, // 30 seconds
     headers: {
         'Content-Type': 'application/json',
     },

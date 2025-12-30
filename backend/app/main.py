@@ -13,12 +13,15 @@ app = FastAPI(
 # CORS Configuration
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[settings.frontend_url, "http://localhost:3000"],
-    allow_origin_regex="https://.*\.vercel\.app",
-    allow_credentials=True,
+    allow_origins=["*"],
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Note: Using allow_origins=["*"] with allow_credentials=True is technically broad, 
+# but FastAPI handles it by echoing the Origin header. 
+# Alternatively, use allow_origin_regex for security in production.
 
 # Event handlers
 @app.on_event("startup")
