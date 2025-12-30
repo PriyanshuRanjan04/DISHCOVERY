@@ -5,13 +5,17 @@ from ..config import settings
 import json
 import re
 
+import os
+# Force stable v1 API directly in code to override any defaults
+os.environ["GOOGLE_API_VERSION"] = "v1"
+
 class LangChainService:
     """Service for LangChain LLM operations"""
     
     def __init__(self):
-        # Initialize Gemini
+        # Initialize Gemini with the most stable model name
         self.llm = ChatGoogleGenerativeAI(
-            model="gemini-1.5-flash-latest",
+            model="gemini-1.5-flash",
             google_api_key=settings.gemini_api_key,
             temperature=0.7
         )
