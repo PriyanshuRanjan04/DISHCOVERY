@@ -5,11 +5,11 @@ pymongo==4.6.2
 motor==3.3.2
 pydantic==2.6.1
 pydantic-settings==2.2.1
-langchain==0.1.20
-langchain-core==0.1.53
-langchain-community==0.0.38
-langchain-google-genai==0.0.9
-langchain-openai==0.0.8
+langchain==0.2.1
+langchain-core==0.2.1
+langchain-community==0.2.1
+langchain-google-genai==1.0.5
+langchain-openai==0.1.7
 requests==2.31.0
 resend==0.7.0
 reportlab==4.1.0
