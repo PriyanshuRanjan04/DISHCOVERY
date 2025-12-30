@@ -24,24 +24,20 @@ class LangChainService:
         print(f"DEBUG: Starting recipe generation for '{query}'...")
         
         prompt = ChatPromptTemplate.from_messages([
-            ("system", """You are an expert chef and recipe creator. Generate detailed, accurate recipes with precise measurements.
-Always respond in valid JSON format with this exact structure:
+            ("system", """Chef AI: Generate a practical recipe in strict JSON.
+Structure:
 {{
-  "title": "Recipe Name",
-  "description": "Brief description",
-  "ingredients": [
-    {{"name": "ingredient name", "quantity": "amount", "unit": "measurement unit"}}
-  ],
-  "instructions": ["step 1", "step 2", ...],
-  "cooking_time": number_in_minutes,
-  "servings": number,
-  "cuisine": "cuisine type",
+  "title": str,
+  "description": str (max 150 chars),
+  "ingredients": [{{"name": str, "quantity": str, "unit": str}}],
+  "instructions": [str],
+  "cooking_time": int (mins),
+  "servings": int,
+  "cuisine": str,
   "difficulty": "easy/medium/hard",
-  "tips": ["tip 1", "tip 2", ...]
-}}
-
-Be creative but practical. Include cooking times, difficulty levels, and helpful tips."""),
-            ("human", "Create a recipe for: {query}\nServings: {servings}")
+  "tips": [str]
+}}"""),
+            ("human", "Create a recipe for: {query} for {servings} servings.")
         ])
         
         chain = prompt | self.llm

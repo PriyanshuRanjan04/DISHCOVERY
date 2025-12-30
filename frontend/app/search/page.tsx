@@ -12,6 +12,7 @@ export default function SearchPage() {
     const [loading, setLoading] = useState(true)
     const [recipe, setRecipe] = useState<any>(null)
     const [error, setError] = useState('')
+    const [statusMessage, setStatusMessage] = useState('Checking our cookbook...')
 
     useEffect(() => {
         let isStopped = false
@@ -27,6 +28,7 @@ export default function SearchPage() {
                     setRecipe(initialRes.recipe)
                     setLoading(false)
                 } else {
+                    if (initialRes.message) setStatusMessage(initialRes.message)
                     // Start polling
                     const poll = async () => {
                         if (isStopped) return
@@ -39,6 +41,9 @@ export default function SearchPage() {
                                 setError(statusRes.error || 'Failed to generate recipe')
                                 setLoading(false)
                             } else {
+                                if (statusRes.status === 'processing') {
+                                    setStatusMessage('Generative AI is crafting your recipe...')
+                                }
                                 // Continue polling
                                 pollTimer = setTimeout(poll, 2000)
                             }
@@ -69,9 +74,11 @@ export default function SearchPage() {
             <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 dark:bg-gray-900">
                 <Loader2 className="w-12 h-12 text-primary animate-spin mb-4" />
                 <h2 className="text-xl font-semibold text-gray-700 dark:text-gray-300">
-                    Creating your perfect recipe...
+                    {statusMessage}
                 </h2>
-                <p className="text-gray-500 mt-2">This usually takes about 10-20 seconds.</p>
+                <p className="text-gray-500 mt-2 text-center max-w-sm px-4">
+                    Our AI chef is crafting every detail. This usually takes 10-20 seconds.
+                </p>
             </div>
         )
     }
