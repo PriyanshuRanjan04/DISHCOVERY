@@ -11,7 +11,22 @@ from datetime import datetime
 
 router = APIRouter()
 
-# ... existing models ...
+class SearchRequest(BaseModel):
+    query: str
+    servings: Optional[int] = 4
+    user_id: Optional[str] = None
+
+class AlternativeRequest(BaseModel):
+    ingredient: str
+    recipe_context: str
+
+class AdjustServingsRequest(BaseModel):
+    recipe: dict
+    new_servings: int
+
+class EmailRecipeRequest(BaseModel):
+    recipe: dict
+    email: str
 
 async def generate_recipe_task(query: str, normalized_query: str, servings: int, user_id: Optional[str]):
     """Background task to generate recipe and update cache"""
