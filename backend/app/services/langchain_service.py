@@ -7,14 +7,25 @@ from langchain_core.prompts import ChatPromptTemplate
 from ..config import settings
 import json
 import re
+import google.generativeai as genai
 
 class LangChainService:
     """Service for LangChain LLM operations"""
     
     def __init__(self):
-        # Initialize Gemini with explicit v1 API version via client_options
+        # Diagnostic: List available models to find the right name
+        try:
+            genai.configure(api_key=settings.gemini_api_key)
+            print("DEBUG: Checking available models...")
+            models = [m.name for m in genai.list_models()]
+            print(f"DEBUG: Available models: {models}")
+        except Exception as e:
+            print(f"DEBUG: Could not list models: {str(e)}")
+
+        # Initialize Gemini with a specific stable version
+        # Some environments prefer flash-001 or flash-002 explicitly
         self.llm = ChatGoogleGenerativeAI(
-            model="gemini-1.5-flash",
+            model="gemini-1.5-flash-002",
             google_api_key=settings.gemini_api_key,
             temperature=0.7,
             client_options={"api_version": "v1"}
