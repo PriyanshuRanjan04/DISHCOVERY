@@ -1,5 +1,7 @@
 import { NextResponse } from 'next/server';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET() {
     console.log('Health check endpoint called');
     console.log('NEXT_PUBLIC_API_URL:', process.env.NEXT_PUBLIC_API_URL);
