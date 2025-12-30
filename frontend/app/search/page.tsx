@@ -24,8 +24,9 @@ export default function SearchPage() {
                 } else {
                     setError('Failed to generate recipe')
                 }
-            } catch (err) {
-                setError('Something went wrong. Please try again.')
+            } catch (err: any) {
+                console.error("Search error:", err)
+                setError(err.response?.data?.detail || err.message || 'Something went wrong. Please check your connection.')
             } finally {
                 setLoading(false)
             }
@@ -49,9 +50,14 @@ export default function SearchPage() {
     if (error) {
         return (
             <div className="min-h-screen flex flex-col items-center justify-center p-4">
-                <div className="text-center space-y-4">
+                <div className="text-center space-y-4 max-w-lg">
                     <h2 className="text-2xl font-bold text-red-500">Oops!</h2>
-                    <p className="text-gray-600 dark:text-gray-400">{error}</p>
+                    <div className="bg-red-50 p-4 rounded-lg text-left">
+                        <p className="text-red-800 font-mono text-sm break-all">{error}</p>
+                    </div>
+                    <p className="text-gray-600 dark:text-gray-400">
+                        Please try again or check the console for more details.
+                    </p>
                     <Link
                         href="/"
                         className="inline-flex items-center px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90"
