@@ -1,4 +1,10 @@
 {
     "buildCommand": "npm run build",
-    "installCommand": "npm install"
+    "installCommand": "npm install",
+    "rewrites": [
+        {
+            "source": "/api/proxy/:path*",
+            "destination": "https://dishcovery-xnat.onrender.com/api/:path*"
+        }
+    ]
 }
