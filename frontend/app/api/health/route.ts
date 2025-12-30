@@ -4,22 +4,31 @@ export const dynamic = 'force-dynamic';
 
 export async function GET() {
     console.log('Health check endpoint called');
-    console.log('NEXT_PUBLIC_API_URL:', process.env.NEXT_PUBLIC_API_URL);
+
+    const hasClerkSecret = !!process.env.CLERK_SECRET_KEY;
+    const backendUrl = process.env.NEXT_PUBLIC_API_URL;
+
+    const diagnostics = {
+        hasClerkSecret,
+        backendUrl: backendUrl || 'MISSING',
+        env: process.env.NODE_ENV,
+    };
 
     try {
-        const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
-        const res = await fetch(`${backendUrl}/health`);
+        const target = backendUrl || 'http://localhost:8000';
+        const res = await fetch(`${target}/health`);
         const data = await res.json();
 
         return NextResponse.json({
             status: 'ok',
-            backendUrl,
+            diagnostics,
             backendResponse: data
         });
     } catch (e: any) {
         console.error('Health check failed:', e);
         return NextResponse.json({
             status: 'error',
+            diagnostics,
             error: e.message,
             stack: e.stack
         }, { status: 500 });
