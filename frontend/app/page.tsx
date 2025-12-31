@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { Search, ChefHat, Sparkles } from 'lucide-react'
+import { Search, ChefHat, Sparkles, BookOpen, Utensils, IceCream } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { recipeAPI } from '@/lib/api'
@@ -83,19 +83,19 @@ export default function HomePage() {
                 {/* Features Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-24">
                     <FeatureCard
-                        icon={<Sparkles className="w-8 h-8" />}
-                        title="AI-Generated Recipes"
-                        description="Get personalized recipes from any cuisine, tailored to your preferences"
+                        icon={<BookOpen className="w-8 h-8" />}
+                        title="Stories Behind Dishes"
+                        description="Uncover the deep history and cultural secrets behind dishes from every corner of the globe."
                     />
                     <FeatureCard
-                        icon={<Search className="w-8 h-8" />}
-                        title="Smart Substitutions"
-                        description="Missing an ingredient? Get intelligent alternatives that work"
+                        icon={<Utensils className="w-8 h-8" />}
+                        title="Everyday Meals"
+                        description="Reduce daily decision fatigue with quick, repeatable, and comforting home-cooked favorites."
                     />
                     <FeatureCard
-                        icon={<ChefHat className="w-8 h-8" />}
-                        title="Portion Control"
-                        description="Adjust recipes for any number of servings with accurate measurements"
+                        icon={<IceCream className="w-8 h-8" />}
+                        title="Desserts & Indulgence"
+                        description="Add joy to your table with traditional sweets, global treats, and festive delicacies."
                     />
                 </div>
 
