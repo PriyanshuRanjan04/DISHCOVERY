@@ -63,7 +63,7 @@ export default function LoadingTrivia() {
                         <div className="h-1 w-full bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden">
                             <div
                                 key={index}
-                                className="h-full bg-gradient-to-r from-primary to-accent transition-all duration-[5000ms] ease-linear"
+                                className="h-full bg-gradient-to-r from-primary to-accent transition-all duration-&lsqb;5000ms&rsqb; ease-linear"
                                 style={{ width: fade ? '100%' : '0%' }}
                             />
                         </div>
