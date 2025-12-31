@@ -77,10 +77,10 @@ Structure:
         chain = prompt | self.llm
         
         try:
-            print("DEBUG: Invoking Gemini...")
+            print("DEBUG: Invoking AI...")
             invoke_start = time.time()
             response = await chain.ainvoke({"query": query, "servings": servings})
-            print(f"DEBUG: Gemini responded in {time.time() - invoke_start:.2f} seconds.")
+            print(f"DEBUG: AI responded in {time.time() - invoke_start:.2f} seconds.")
             
             # Extract JSON from response
             content = response.content
