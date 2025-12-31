@@ -33,27 +33,27 @@ export default function LoadingTrivia() {
     }, [])
 
     return (
-        <div className="max-w-md w-full mt-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
-            <div className="bg-white dark:bg-gray-800 rounded-3xl p-8 border border-primary/10 shadow-xl relative overflow-hidden group">
+        <div className="max-w-md w-full mx-auto mt-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
+            <div className="bg-white dark:bg-gray-800 rounded-[2rem] p-10 border border-primary/10 shadow-2xl relative overflow-hidden group">
                 {/* Decorative Elements */}
                 <div className="absolute -top-4 -right-4 w-24 h-24 bg-primary/5 rounded-full blur-2xl group-hover:bg-primary/10 transition-colors" />
                 <div className="absolute -bottom-4 -left-4 w-20 h-20 bg-accent/5 rounded-full blur-xl group-hover:bg-accent/10 transition-colors" />
 
                 <div className="relative space-y-6">
-                    <div className="flex items-center justify-center gap-3">
-                        <div className="bg-primary/10 p-2 rounded-xl">
-                            <Sparkles className="w-5 h-5 text-primary animate-pulse" />
+                    <div className="flex flex-col items-center justify-center gap-2">
+                        <div className="bg-primary/10 p-3 rounded-2xl mb-2">
+                            <Sparkles className="w-6 h-6 text-primary animate-pulse" />
                         </div>
-                        <h4 className="text-lg font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent uppercase tracking-wider">
+                        <h4 className="text-xl font-black bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent uppercase tracking-[0.2em]">
                             Fun Food Facts 🍕
                         </h4>
                     </div>
 
-                    <div className={`transition-all duration-500 min-h-[80px] flex flex-col items-center justify-center text-center px-4 ${fade ? 'opacity-100 transform translate-y-0' : 'opacity-0 transform -translate-y-2'}`}>
-                        <span className="text-4xl mb-4 block animate-bounce-slow">
+                    <div className={`transition-all duration-500 min-h-[140px] flex flex-col items-center justify-center text-center px-4 ${fade ? 'opacity-100 transform translate-y-0' : 'opacity-0 transform -translate-y-2'}`}>
+                        <span className="text-6xl mb-6 block drop-shadow-lg">
                             {TRIVIA[index].icon}
                         </span>
-                        <p className="text-gray-700 dark:text-gray-300 text-lg font-medium leading-relaxed">
+                        <p className="text-gray-700 dark:text-gray-300 text-xl font-bold leading-relaxed max-w-sm">
                             {TRIVIA[index].text}
                         </p>
                     </div>
