@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { UserButton, SignedIn, SignedOut } from '@clerk/nextjs'
 import { ChefHat, Globe, History, Heart } from 'lucide-react'
 import { usePathname } from 'next/navigation'
+import { ThemeToggle } from './ThemeToggle'
 
 export default function Navbar() {
     const pathname = usePathname()

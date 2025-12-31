@@ -9,6 +9,8 @@ import { useUser } from '@clerk/nextjs'
 import SubstitutionHandler from '@/components/SubstitutionHandler'
 import LoadingTrivia from '@/components/LoadingTrivia'
 import CookingLoader from '@/components/CookingLoader'
+import { PdfExport } from '@/components/PdfExport'
+import { ShareButtons } from '@/components/ShareButtons'
 
 export default function SearchPage() {
     const searchParams = useSearchParams()
@@ -207,7 +209,7 @@ export default function SearchPage() {
                     Back to Search
                 </Link>
 
-                <div className="bg-white dark:bg-gray-800 rounded-3xl shadow-xl overflow-hidden">
+                <div id="recipe-content" className="bg-white dark:bg-gray-800 rounded-3xl shadow-xl overflow-hidden">
                     <div className="h-72 bg-gray-200 dark:bg-gray-700 relative overflow-hidden group">
                         <img
                             src={recipe.image_url || `https://source.unsplash.com/featured/1200x800?food,${recipe.cuisine || 'recipe'},cooking`}
@@ -222,7 +224,7 @@ export default function SearchPage() {
                         <button
                             onClick={handleSave}
                             disabled={saving || isSaved}
-                            className={`absolute bottom-6 right-8 p-4 rounded-full shadow-lg transition-all transform hover:scale-110 active:scale-95 flex items-center gap-2 ${isSaved
+                            className={`absolute bottom-6 right-8 p-4 rounded-full shadow-lg transition-all transform hover:scale-110 active:scale-95 flex items-center gap-2 no-export ${isSaved
                                 ? 'bg-green-500 text-white'
                                 : 'bg-white text-primary hover:bg-gray-50'
                                 }`}
@@ -242,6 +244,11 @@ export default function SearchPage() {
                     </div>
 
                     <div className="p-8">
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 mb-8 no-export">
+                            <ShareButtons title={recipe.title} />
+                            <PdfExport recipe={recipe} elementId="recipe-content" />
+                        </div>
+
                         <p className="text-lg text-gray-600 dark:text-gray-300 mb-8 italic">
                             {recipe.description}
                         </p>

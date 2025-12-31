@@ -51,7 +51,7 @@ async def save_recipe(request: SaveRecipeRequest):
     
     # Check if a recipe with the same title is already saved by this user
     existing = await db.saved_recipes.find_one({
-        "user_id": request_id := request.user_id,
+        "user_id": request.user_id,
         "recipe_data.title": request.recipe.get("title")
     })
     

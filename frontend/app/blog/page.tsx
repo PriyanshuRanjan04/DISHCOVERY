@@ -4,6 +4,8 @@ import { useEffect, useState } from 'react'
 import { explorerAPI } from '@/lib/api'
 import Link from 'next/link'
 import { Globe, Calendar, User, ArrowLeft, Loader2 } from 'lucide-react'
+import { PdfExport } from '@/components/PdfExport'
+import { ShareButtons } from '@/components/ShareButtons'
 
 export default function BlogPage() {
     const [posts, setPosts] = useState<any[]>([])
@@ -105,10 +107,10 @@ export default function BlogPage() {
                 {/* Detailed Story Modal */}
                 {selectedPost && (
                     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
-                        <div className="bg-white dark:bg-gray-900 w-full max-w-4xl max-h-[90vh] rounded-3xl overflow-y-auto shadow-2xl relative">
+                        <div id="explorer-content" className="bg-white dark:bg-gray-900 w-full max-w-4xl max-h-[90vh] rounded-3xl overflow-y-auto shadow-2xl relative">
                             <button
                                 onClick={() => setSelectedPost(null)}
-                                className="absolute top-6 right-6 z-10 p-2 bg-white/80 dark:bg-gray-800/80 rounded-full hover:bg-white dark:hover:bg-gray-800 transition-colors shadow-md"
+                                className="absolute top-6 right-6 z-10 p-2 bg-white/80 dark:bg-gray-800/80 rounded-full hover:bg-white dark:hover:bg-gray-800 transition-colors shadow-md no-export"
                             >
                                 <ArrowLeft className="w-6 h-6 rotate-90" />
                             </button>
@@ -129,6 +131,19 @@ export default function BlogPage() {
                             </div>
 
                             <div className="p-8 lg:p-12 space-y-12">
+                                <div className="flex flex-wrap items-center justify-between gap-6 no-export border-b border-gray-100 dark:border-gray-800 pb-8">
+                                    <ShareButtons title={selectedPost.title} />
+                                    <PdfExport
+                                        recipe={{
+                                            title: selectedPost.title,
+                                            description: selectedPost.intro,
+                                            ingredients: selectedPost.recipe_ingredients,
+                                            instructions: selectedPost.recipe_instructions
+                                        }}
+                                        elementId="explorer-content"
+                                    />
+                                </div>
+
                                 {/* Structure based on user template */}
                                 <section>
                                     <p className="text-2xl text-gray-600 dark:text-gray-300 italic font-medium leading-relaxed border-l-4 border-primary pl-6">

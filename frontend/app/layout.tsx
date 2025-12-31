@@ -16,6 +16,7 @@ export const metadata: Metadata = {
 const publishableKey = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY;
 
 import Navbar from '@/components/Navbar'
+import { ThemeProvider } from '@/components/ThemeProvider'
 
 export default function RootLayout({
     children,
@@ -41,10 +42,17 @@ export default function RootLayout({
         <ClerkProvider>
             <html lang="en" suppressHydrationWarning>
                 <body className={`${inter.variable} ${outfit.variable} antialiased`}>
-                    <Navbar />
-                    <main>
-                        {children}
-                    </main>
+                    <ThemeProvider
+                        attribute="class"
+                        defaultTheme="system"
+                        enableSystem
+                        disableTransitionOnChange
+                    >
+                        <Navbar />
+                        <main>
+                            {children}
+                        </main>
+                    </ThemeProvider>
                 </body>
             </html>
         </ClerkProvider>
