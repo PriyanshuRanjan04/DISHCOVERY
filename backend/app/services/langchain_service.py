@@ -248,7 +248,7 @@ Respond ONLY in strict JSON format with this structure:
         
         for dish in results:
             keywords = dish.get("image_keywords", "food")
-            dish["image_url"] = f"https://source.unsplash.com/featured/800x600?food,{keywords.replace(' ', ',')}"
+            dish["image_url"] = f"https://loremflickr.com/800/600/food,{keywords.replace(' ', ',')}/all"
             
         return results
 
@@ -319,11 +319,10 @@ Respond in strict JSON format:
         
         stories = data.get("stories", [])
         
-        # Add realistic image URLs using Unsplash
+        # Add realistic image URLs using LoremFlickr
         for story in stories:
             keywords = story.get("image_keywords", "food")
-            # Use unsplash source with keywords
-            story["image_url"] = f"https://source.unsplash.com/featured/800x600?food,{keywords.replace(' ', ',')}"
+            story["image_url"] = f"https://loremflickr.com/800/600/food,{keywords.replace(' ', ',')}/all"
             
         return stories
 
