@@ -12,6 +12,7 @@ class Settings(BaseSettings):
 
     # LLM APIs
     llm_provider: str = "gemini"  # options: "gemini", "openai", "groq"
+    gemini_model_name: str = "gemini-1.5-flash"
     gemini_api_key: str = ""
     openai_api_key: str = ""
     groq_api_key: str = ""

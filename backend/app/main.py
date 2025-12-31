@@ -1,14 +1,35 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from .config import settings
 from .database import connect_to_mongo, close_mongo_connection, get_database
 from .routes import recipes, users, blog
+import traceback
+import sys
 
 app = FastAPI(
     title=settings.app_name,
     description="AI-Powered Recipe Discovery Platform API",
     version="1.0.0",
 )
+
+# Global Exception Handler for better debugging in Render logs
+@app.exception_handler(Exception)
+async def global_exception_handler(request: Request, exc: Exception):
+    print(f"CRITICAL ERROR: {str(exc)}", file=sys.stderr)
+    traceback.print_exc()
+    return {
+        "success": False,
+        "detail": f"Internal Server Error: {str(exc)}",
+        "type": type(exc).__name__
+    }
+
+# Specific handler for HTTPException to keep their custom status codes
+@app.exception_handler(HTTPException)
+async def http_exception_handler(request: Request, exc: HTTPException):
+    return {
+        "success": False,
+        "detail": exc.detail
+    }
 
 # CORS Configuration
 app.add_middleware(
