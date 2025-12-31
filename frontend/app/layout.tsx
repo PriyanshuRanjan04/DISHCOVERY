@@ -7,7 +7,7 @@ const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
 const outfit = Outfit({ subsets: ['latin'], variable: '--font-outfit' })
 
 export const metadata: Metadata = {
-    title: 'Recipe AI - Discover Delicious Recipes',
+    title: 'Dishcovery - Discover Delicious Recipes',
     description: 'AI-powered recipe discovery platform with personalized recommendations, ingredient substitutions, and cooking tips.',
     keywords: 'recipes, cooking, AI, food, ingredients, meal planning',
 }

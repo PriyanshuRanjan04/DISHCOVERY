@@ -73,7 +73,11 @@ export default function HistoryPage() {
                 ) : (
                     <div className="space-y-4">
                         {history.map((item) => (
-                            <div key={item._id} className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm hover:shadow-md transition-shadow flex items-center justify-between group">
+                            <Link
+                                key={item.id}
+                                href={`/search?q=${encodeURIComponent(item.query)}`}
+                                className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm hover:shadow-md transition-shadow flex items-center justify-between group"
+                            >
                                 <div>
                                     <div className="flex items-center gap-3 text-sm text-gray-500 mb-2">
                                         <Calendar className="w-4 h-4" />
@@ -89,7 +93,7 @@ export default function HistoryPage() {
                                 <div className="text-gray-400 group-hover:text-primary transition-colors">
                                     <ChevronRight className="w-6 h-6" />
                                 </div>
-                            </div>
+                            </Link>
                         ))}
                     </div>
                 )}

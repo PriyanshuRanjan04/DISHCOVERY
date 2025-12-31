@@ -42,7 +42,7 @@ export default function HomePage() {
                         <div className="flex items-center space-x-2">
                             <ChefHat className="w-8 h-8 text-primary" />
                             <span className="text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-                                Recipe AI
+                                Dishcovery
                             </span>
                         </div>
 
@@ -154,15 +154,17 @@ export default function HomePage() {
                         <h2 className="text-3xl font-bold text-gray-900 dark:text-white">
                             Popular Recipes
                         </h2>
-                        <button className="text-primary hover:text-accent transition-colors font-semibold">
+                        <Link href="/popular" className="text-primary hover:text-accent transition-colors font-semibold">
                             View All →
-                        </button>
+                        </Link>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                         {popularRecipes.length > 0 ? (
                             popularRecipes.map((recipe, i) => (
-                                <RecipeCard key={i} recipe={recipe} />
+                                <Link key={i} href={`/search?q=${encodeURIComponent(recipe.title)}&popularId=${recipe.id}`}>
+                                    <RecipeCard recipe={recipe} />
+                                </Link>
                             ))
                         ) : (
                             // Show placeholders while loading

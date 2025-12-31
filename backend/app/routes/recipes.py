@@ -82,6 +82,16 @@ async def search_recipes(request: SearchRequest, background_tasks: BackgroundTas
         
         if cached_recipe:
             if cached_recipe.get("status") == "completed":
+                # Save to history if user_id provided
+                if request.user_id:
+                    history_entry = SearchHistory(
+                        user_id=request.user_id,
+                        query=request.query,
+                        recipe_generated=Recipe(**cached_recipe["recipe_data"]),
+                        searched_at=datetime.utcnow()
+                    )
+                    await db.search_history.insert_one(history_entry.dict())
+
                 return {
                     "success": True,
                     "recipe": cached_recipe["recipe_data"],
@@ -216,47 +226,31 @@ async def email_recipe(request: EmailRecipeRequest):
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Email sending failed: {str(e)}")
 
+from ..data.popular_recipes import POPULAR_RECIPES
+
 @router.get("/popular")
-async def get_popular_recipes():
-    """Get popular recipes (curated)"""
+async def get_popular_recipes(limit: int = 4):
+    """Get popular recipes from curated list"""
     return {
         "success": True,
-        "recipes": [
-            {
-                "title": "Classic Margherita Pizza",
-                "description": "Authentic Neapolitan pizza with fresh basil and mozzarella.",
-                "image": "https://images.unsplash.com/photo-1574071318508-1cdbab80d002?w=800&q=80",
-                "cooking_time": 30,
-                "servings": 4,
-                "difficulty": "medium",
-                "cuisine": "Italian"
-            },
-            {
-                "title": "Creamy Mushroom Risotto",
-                "description": "Rich and creamy Italian rice dish with wild mushrooms.",
-                "image": "https://images.unsplash.com/photo-1476124369491-e7addf5db371?w=800&q=80",
-                "cooking_time": 45,
-                "servings": 4,
-                "difficulty": "hard",
-                "cuisine": "Italian"
-            },
-            {
-                "title": "Spicy Chicken Curry",
-                "description": "Aromatic Indian curry with tender chicken pieces.",
-                "image": "https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?w=800&q=80",
-                "cooking_time": 40,
-                "servings": 4,
-                "difficulty": "medium",
-                "cuisine": "Indian"
-            },
-            {
-                "title": "Japanese Ramen Bowl",
-                "description": "Comforting noodle soup with rich broth and toppings.",
-                "image": "https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=800&q=80",
-                "cooking_time": 60,
-                "servings": 2,
-                "difficulty": "hard",
-                "cuisine": "Japanese"
-            }
-        ]
+        "recipes": POPULAR_RECIPES[:limit]
+    }
+
+@router.get("/popular/all")
+async def get_all_popular_recipes():
+    """Get all 50 popular recipes"""
+    return {
+        "success": True,
+        "recipes": POPULAR_RECIPES
+    }
+
+@router.get("/popular/{recipe_id}")
+async def get_popular_recipe_by_id(recipe_id: str):
+    """Get a single popular recipe by ID"""
+    recipe = next((r for r in POPULAR_RECIPES if r["id"] == recipe_id), None)
+    if not recipe:
+        raise HTTPException(status_code=404, detail="Recipe not found")
+    return {
+        "success": True,
+        "recipe": recipe
     }

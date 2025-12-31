@@ -191,5 +191,48 @@ Provide practical alternatives that maintain flavor and texture. Always respond 
         
         return adjusted_recipe
 
+    async def generate_daily_stories(self) -> list:
+        """Generate 5 daily food history stories from different regions"""
+        if not self.llm:
+            raise RuntimeError("LLM is not initialized.")
+
+        regions = ["Asia", "Europe", "Africa", "Americas", "Middle East/Oceania"]
+        
+        prompt = ChatPromptTemplate.from_messages([
+            ("system", f"""You are a culinary historian for 'Dishcovery'. 
+Generate exactly 5 fascinating food history stories. 
+Each story MUST be from a different region: {', '.join(regions)}.
+
+Focus on:
+1. The history and origin of a specific dish.
+2. How the food is mood/prepared in that specific region.
+3. Cultural significance.
+
+Respond in strict JSON format:
+{{
+  "stories": [
+    {{
+      "title": "Emoji + Catchy Title",
+      "content": "Detailed 3-4 sentence historical story",
+      "region": "Region Name",
+      "tags": ["Tag1", "Tag2"]
+    }}
+  ]
+}}"""),
+            ("human", "Generate today's 5 global food stories.")
+        ])
+        
+        chain = prompt | self.llm
+        response = await chain.ainvoke({})
+        
+        content = response.content
+        json_match = re.search(r'\{.*\}', content, re.DOTALL)
+        if json_match:
+            data = json.loads(json_match.group())
+        else:
+            data = json.loads(content)
+        
+        return data.get("stories", [])
+
 # Singleton instance
 langchain_service = LangChainService()

@@ -41,7 +41,7 @@ export default function BlogPage() {
                 <div className="flex items-center justify-between mb-8">
                     <h1 className="text-3xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
                         <BookOpen className="w-8 h-8 text-primary" />
-                        Culinary Blog
+                        Dishcovery Stories
                     </h1>
                 </div>
 

@@ -21,7 +21,7 @@ class Settings(BaseSettings):
     frontend_url: str = "http://localhost:3000"
 
     # App settings
-    app_name: str = "Recipe AI"
+    app_name: str = "Dishcovery"
     debug: bool = False
 
     class Config:

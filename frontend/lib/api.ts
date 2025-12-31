@@ -23,8 +23,8 @@ apiClient.interceptors.request.use(async (config: InternalAxiosRequestConfig) =>
 
 // Recipe API calls
 export const recipeAPI = {
-    search: async (query: string, servings?: number) => {
-        const response = await apiClient.post('/api/recipes/search', { query, servings })
+    search: async (query: string, servings?: number, userId?: string) => {
+        const response = await apiClient.post('/api/recipes/search', { query, servings, user_id: userId })
         return response.data
     },
 

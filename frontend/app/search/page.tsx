@@ -2,27 +2,46 @@
 
 import { useSearchParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
-import { recipeAPI } from '@/lib/api'
+import { recipeAPI, userAPI } from '@/lib/api'
 import Link from 'next/link'
-import { Timer, Users, ChefHat, ArrowLeft, Loader2 } from 'lucide-react'
+import { Timer, Users, ChefHat, ArrowLeft, Loader2, Heart, Check } from 'lucide-react'
+import { useUser } from '@clerk/nextjs'
 
 export default function SearchPage() {
     const searchParams = useSearchParams()
     const query = searchParams.get('q')
+    const popularId = searchParams.get('popularId')
+    const { user, isLoaded: isUserLoaded } = useUser()
     const [loading, setLoading] = useState(true)
     const [recipe, setRecipe] = useState<any>(null)
     const [error, setError] = useState('')
     const [statusMessage, setStatusMessage] = useState('Checking our cookbook...')
+    const [isSaved, setIsSaved] = useState(false)
+    const [saving, setSaving] = useState(false)
 
     useEffect(() => {
         let isStopped = false
         let pollTimer: NodeJS.Timeout
 
         const fetchRecipe = async () => {
-            if (!query) return
+            if ((!query && !popularId) || !isUserLoaded) return
             try {
                 setLoading(true)
-                const initialRes = await recipeAPI.search(query)
+
+                // If it's a popular recipe click, fetch directly
+                if (popularId) {
+                    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/recipes/popular/${popularId}`)
+                    const data = await response.json()
+                    if (data.success) {
+                        setRecipe(data.recipe)
+                        setLoading(false)
+                        return
+                    }
+                }
+
+                if (!query) return
+
+                const initialRes = await recipeAPI.search(query, 4, user?.id)
 
                 if (initialRes.status === 'completed') {
                     setRecipe(initialRes.recipe)
@@ -67,7 +86,26 @@ export default function SearchPage() {
             isStopped = true
             clearTimeout(pollTimer)
         }
-    }, [query])
+    }, [query, user, isUserLoaded])
+
+    const handleSave = async () => {
+        if (!user) {
+            alert('Please sign in to save recipes')
+            return
+        }
+        if (!recipe || isSaved) return
+
+        try {
+            setSaving(true)
+            await userAPI.saveRecipe(user.id, recipe)
+            setIsSaved(true)
+        } catch (err) {
+            console.error('Save error:', err)
+            alert('Failed to save recipe')
+        } finally {
+            setSaving(false)
+        }
+    }
 
     if (loading) {
         return (
@@ -132,9 +170,29 @@ export default function SearchPage() {
                     <div className="h-64 bg-gradient-to-r from-primary to-accent relative flex items-center justify-center">
                         <ChefHat className="w-24 h-24 text-white/20" />
                         <div className="absolute inset-0 bg-black/10" />
-                        <h1 className="absolute bottom-6 left-8 text-4xl font-bold text-white shadow-sm">
+                        <h1 className="absolute bottom-6 left-8 text-4xl font-bold text-white shadow-sm pr-20">
                             {recipe.title}
                         </h1>
+                        <button
+                            onClick={handleSave}
+                            disabled={saving || isSaved}
+                            className={`absolute bottom-6 right-8 p-4 rounded-full shadow-lg transition-all transform hover:scale-110 active:scale-95 flex items-center gap-2 ${isSaved
+                                ? 'bg-green-500 text-white'
+                                : 'bg-white text-primary hover:bg-gray-50'
+                                }`}
+                        >
+                            {isSaved ? (
+                                <>
+                                    <Check className="w-6 h-6" />
+                                    <span className="font-bold sm:inline hidden text-sm">Saved!</span>
+                                </>
+                            ) : (
+                                <>
+                                    <Heart className={`w-6 h-6 ${saving ? 'animate-pulse' : ''}`} />
+                                    <span className="font-bold sm:inline hidden text-sm">Save Recipe</span>
+                                </>
+                            )}
+                        </button>
                     </div>
 
                     <div className="p-8">

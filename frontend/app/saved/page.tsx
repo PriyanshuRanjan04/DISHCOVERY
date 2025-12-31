@@ -41,7 +41,7 @@ export default function SavedPage() {
 
         try {
             await userAPI.deleteSavedRecipe(user.id, recipeId)
-            setSavedRecipes(prev => prev.filter(r => r._id !== recipeId))
+            setSavedRecipes(prev => prev.filter(r => r.id !== recipeId))
         } catch (err) {
             console.error('Failed to delete', err)
             alert('Failed to delete recipe')
@@ -88,11 +88,15 @@ export default function SavedPage() {
                         {savedRecipes.map((item) => {
                             const recipe = item.recipe_data;
                             return (
-                                <div key={item._id} className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm hover:shadow-md transition-shadow overflow-hidden group relative">
+                                <Link
+                                    key={item.id}
+                                    href={`/search?q=${encodeURIComponent(recipe.title)}`}
+                                    className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm hover:shadow-md transition-shadow overflow-hidden group relative"
+                                >
                                     <div className="h-48 bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center relative">
                                         <ChefHat className="w-16 h-16 text-primary/40" />
                                         <button
-                                            onClick={(e) => handleDelete(item._id, e)}
+                                            onClick={(e) => handleDelete(item.id, e)}
                                             className="absolute top-3 right-3 p-2 bg-white/90 rounded-full text-red-500 hover:bg-red-50 transition-colors opacity-0 group-hover:opacity-100"
                                             title="Remove"
                                         >
@@ -120,7 +124,7 @@ export default function SavedPage() {
                                             </span>
                                         </div>
                                     </div>
-                                </div>
+                                </Link>
                             )
                         })}
                     </div>

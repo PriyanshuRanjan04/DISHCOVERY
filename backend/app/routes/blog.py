@@ -19,20 +19,84 @@ class AddCommentRequest(BaseModel):
     user_name: str
     text: str
 
+from ..services.langchain_service import langchain_service
+
 @router.get("/posts")
-async def get_blog_posts(limit: int = 20, skip: int = 0):
-    """Get all blog posts"""
+async def get_blog_posts(limit: int = 5, skip: int = 0):
+    """Get 5 daily dynamic food stories (cached for 24h)"""
     db = get_database()
+    today_str = datetime.utcnow().strftime("%Y-%m-%d")
     
-    posts = await db.blog_posts.find().sort(
-        "created_at", -1
-    ).skip(skip).limit(limit).to_list(length=limit)
+    # Fallback stories if DB or AI fails
+    fallback = [
+        {
+            "_id": "fb1",
+            "title": "🥘 The Story Behind Butter Chicken",
+            "content": "Did you know that Butter Chicken was created by accident? In the 1950s, at the Moti Mahal restaurant in Delhi, cooks would reuse leftover tandoori chicken by simmering it in a rich tomato, butter, and cream sauce.",
+            "author_name": "Dishcovery Team",
+            "created_at": datetime.utcnow(),
+            "tags": ["Indian", "History"]
+        }
+    ]
+
+    if not db:
+        return {"success": True, "posts": fallback, "count": 1, "note": "Database not connected"}
+
+    # 1. Check if we already have today's stories
+    try:
+        existing_stories = await db.daily_stories.find({"date_key": today_str}).to_list(length=10)
     
-    return {
-        "success": True,
-        "posts": posts,
-        "count": len(posts)
-    }
+    if existing_stories:
+        # Convert _id to string for JSON serialization
+        for s in existing_stories:
+            s["_id"] = str(s["_id"])
+        return {
+            "success": True,
+            "posts": existing_stories,
+            "count": len(existing_stories),
+            "source": "cache"
+        }
+    
+    # 2. If not, generate new ones using AI
+    try:
+        new_stories_data = await langchain_service.generate_daily_stories()
+        
+        # Prepare for database
+        db_stories = []
+        for story in new_stories_data:
+            story_doc = {
+                "title": story["title"],
+                "content": story["content"],
+                "region": story["region"],
+                "tags": story["tags"],
+                "author_name": "Dishcovery Team",
+                "created_at": datetime.utcnow(),
+                "date_key": today_str
+            }
+            db_stories.append(story_doc)
+        
+        # Insert and get IDs
+        if db_stories:
+            result = await db.daily_stories.insert_many(db_stories)
+            # Re-fetch or manually add IDs to return
+            for idx, doc_id in enumerate(result.inserted_ids):
+                db_stories[idx]["_id"] = str(doc_id)
+        
+        return {
+            "success": True,
+            "posts": db_stories,
+            "count": len(db_stories),
+            "source": "generated"
+        }
+        
+    except Exception as e:
+        print(f"Error in blog posts: {str(e)}")
+        return {
+            "success": True,
+            "posts": fallback,
+            "count": len(fallback),
+            "error": str(e)
+        }
 
 @router.get("/posts/{post_id}")
 async def get_blog_post(post_id: str):

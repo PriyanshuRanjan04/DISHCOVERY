@@ -28,9 +28,16 @@ async def get_user_history(user_id: str, limit: int = 20):
     """Get user's recipe search history"""
     db = get_database()
     
-    history = await db.search_history.find(
+    history_raw = await db.search_history.find(
         {"user_id": user_id}
     ).sort("searched_at", -1).limit(limit).to_list(length=limit)
+    
+    # Convert ObjectId to string for JSON serialization
+    history = []
+    for item in history_raw:
+        item["id"] = str(item["_id"])
+        del item["_id"]
+        history.append(item)
     
     return {
         "success": True,
@@ -61,9 +68,16 @@ async def get_saved_recipes(user_id: str):
     """Get user's saved recipes"""
     db = get_database()
     
-    recipes = await db.saved_recipes.find(
+    recipes_raw = await db.saved_recipes.find(
         {"user_id": user_id}
     ).sort("saved_at", -1).to_list(length=100)
+    
+    # Convert ObjectId to string
+    recipes = []
+    for item in recipes_raw:
+        item["id"] = str(item["_id"])
+        del item["_id"]
+        recipes.append(item)
     
     return {
         "success": True,
