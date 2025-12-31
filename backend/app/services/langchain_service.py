@@ -26,11 +26,20 @@ class LangChainService:
             if not settings.gemini_api_key:
                 print("WARNING: GEMINI_API_KEY not found.")
             
-            return ChatGoogleGenerativeAI(
-                model=settings.gemini_model_name,
-                google_api_key=settings.gemini_api_key,
-                temperature=0.7
-            )
+            try:
+                print(f"DEBUG: Initializing Gemini with model: {settings.gemini_model_name}")
+                return ChatGoogleGenerativeAI(
+                    model=settings.gemini_model_name,
+                    google_api_key=settings.gemini_api_key,
+                    temperature=0.7
+                )
+            except Exception as e:
+                print(f"WARNING: Preferred Gemini model failed ({str(e)}). Falling back to gemini-1.5-flash.")
+                return ChatGoogleGenerativeAI(
+                    model="gemini-1.5-flash",
+                    google_api_key=settings.gemini_api_key,
+                    temperature=0.7
+                )
         
         elif provider == "openai":
             from langchain_openai import ChatOpenAI
