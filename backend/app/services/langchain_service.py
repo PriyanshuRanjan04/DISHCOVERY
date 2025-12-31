@@ -1,6 +1,4 @@
 import os
-# CRITICAL: This must be set BEFORE importing langchain_google_genai
-os.environ["GOOGLE_API_VERSION"] = "v1"
 
 from langchain_core.prompts import ChatPromptTemplate
 from ..config import settings
