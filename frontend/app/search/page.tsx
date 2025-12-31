@@ -208,10 +208,15 @@ export default function SearchPage() {
                 </Link>
 
                 <div className="bg-white dark:bg-gray-800 rounded-3xl shadow-xl overflow-hidden">
-                    <div className="h-64 bg-gradient-to-r from-primary to-accent relative flex items-center justify-center">
-                        <ChefHat className="w-24 h-24 text-white/20" />
-                        <div className="absolute inset-0 bg-black/10" />
-                        <h1 className="absolute bottom-6 left-8 text-4xl font-bold text-white shadow-sm pr-20">
+                    <div className="h-72 bg-gray-200 dark:bg-gray-700 relative overflow-hidden group">
+                        <img
+                            src={recipe.image_url || `https://source.unsplash.com/featured/1200x800?food,${recipe.cuisine || 'recipe'},cooking`}
+                            alt={recipe.title}
+                            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+
+                        <h1 className="absolute bottom-6 left-8 right-8 text-4xl font-bold text-white shadow-sm line-clamp-2">
                             {recipe.title}
                         </h1>
                         <button

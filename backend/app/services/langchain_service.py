@@ -69,7 +69,8 @@ Structure:
   "servings": int,
   "cuisine": str,
   "difficulty": "easy/medium/hard",
-  "tips": [str]
+  "tips": [str],
+  "image_keywords": "2-3 detailed keywords for a realistic food photo"
 }}"""),
             ("human", "Create a recipe for: {query} for {servings} servings.")
         ])
@@ -93,6 +94,10 @@ Structure:
                 # Fallback: try to parse entire content
                 recipe_data = json.loads(content)
             
+            # Add realistic image URL using Unsplash
+            keywords = recipe_data.get("image_keywords", query)
+            recipe_data["image_url"] = f"https://source.unsplash.com/featured/1200x800?food,{keywords.replace(' ', ',')}"
+
             print(f"DEBUG: Total generation time: {time.time() - start_time:.2f} seconds.")
             return recipe_data
         except Exception as e:
@@ -196,12 +201,21 @@ Provide practical alternatives that maintain flavor and texture. Always respond 
         if not self.llm:
             raise RuntimeError("LLM is not initialized.")
 
-        regions = ["Asia", "Europe", "Africa", "Americas", "Middle East/Oceania"]
+        # Define specific categories for exploration
+        categories = [
+            "A specific Country (non-India)", 
+            "An Indian State (e.g., Punjab, Kerala, Nagaland) 🔥", 
+            "A Festival-based food tradition (e.g., Diwali, Christmas, Eid, Lunar New Year)",
+            "A unique Global Region (e.g., Caribbean, Balkan, Nordic)",
+            "A historical or ancient cuisine (e.g., Aztec, Roman, Medieval Indian)"
+        ]
         
         prompt = ChatPromptTemplate.from_messages([
-            ("system", f"""You are a culinary historian and master chef for 'Dishcovery'. 
-Generate exactly 5 fascinating food history stories. 
-Each story MUST be from a different region: {', '.join(regions)}.
+            ("system", f"""You are a culinary explorer and master chef for 'Dishcovery'. 
+Generate exactly 5 fascinating regional food profiles. 
+Each profile MUST represent one of these categories: {', '.join(categories)}.
+At least ONE story MUST be about a specific Indian State.
+At least ONE story MUST be about a Festival-based food tradition.
 
 For each story, follow this EXACT structure:
 1. Title: Emoji + Catchy Title
@@ -228,8 +242,8 @@ Respond in strict JSON format:
       }},
       "tips_variations": ["str"],
       "conclusion": "str",
-      "region": "str",
-      "tags": ["str"],
+      "region": "str (Name of the Country, Indian State, or Festival)",
+      "tags": ["str (e.g., 'Indian State', 'Festival', 'Country', 'Ancient Cuisine')"],
       "image_keywords": "str"
     }}
   ]

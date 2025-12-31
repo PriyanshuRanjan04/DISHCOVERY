@@ -1,9 +1,9 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { blogAPI } from '@/lib/api'
+import { explorerAPI } from '@/lib/api'
 import Link from 'next/link'
-import { BookOpen, Calendar, User, ArrowLeft, Loader2 } from 'lucide-react'
+import { Globe, Calendar, User, ArrowLeft, Loader2 } from 'lucide-react'
 
 export default function BlogPage() {
     const [posts, setPosts] = useState<any[]>([])
@@ -14,7 +14,7 @@ export default function BlogPage() {
     useEffect(() => {
         const fetchPosts = async () => {
             try {
-                const data = await blogAPI.getPosts()
+                const data = await explorerAPI.getPosts()
                 if (data.success) {
                     setPosts(data.posts)
                 }
@@ -41,10 +41,10 @@ export default function BlogPage() {
 
                 <div className="flex flex-col gap-2 mb-12">
                     <h1 className="text-4xl font-extrabold text-gray-900 dark:text-white flex items-center gap-3">
-                        <BookOpen className="w-10 h-10 text-primary" />
-                        Daily Dishcovery Stories
+                        <Globe className="w-10 h-10 text-primary" />
+                        Cuisine Explorer
                     </h1>
-                    <p className="text-gray-500 text-lg">5 Unique World Dishes. Every Single Day.</p>
+                    <p className="text-gray-500 text-lg">Discover dishes by Country, Indian States 🔥, and Festivals.</p>
                 </div>
 
                 {loading ? (
@@ -55,9 +55,9 @@ export default function BlogPage() {
                     <div className="text-center text-red-500 py-10">{error}</div>
                 ) : posts.length === 0 ? (
                     <div className="text-center py-20 bg-white dark:bg-gray-800 rounded-2xl shadow-sm">
-                        <BookOpen className="w-12 h-12 text-gray-300 mx-auto mb-4" />
-                        <h3 className="text-xl font-medium text-gray-900 dark:text-white mb-2">No stories yet</h3>
-                        <p className="text-gray-500">Check back in a moment as our AI chefs prepare today's stories.</p>
+                        <Globe className="w-12 h-12 text-gray-300 mx-auto mb-4" />
+                        <h3 className="text-xl font-medium text-gray-900 dark:text-white mb-2">No regional dishes yet</h3>
+                        <p className="text-gray-500">Check back in a moment as our AI chefs curate today's regional highlights.</p>
                     </div>
                 ) : (
                     <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">

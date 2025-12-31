@@ -116,18 +116,26 @@ export default function HistoryPage() {
                             <Link
                                 key={item.id}
                                 href={`/search?q=${encodeURIComponent(item.query)}`}
-                                className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm hover:shadow-md transition-shadow flex items-center justify-between group relative"
+                                className="bg-white dark:bg-gray-800 p-4 sm:p-6 rounded-2xl shadow-sm hover:shadow-md transition-all flex items-center gap-4 sm:gap-6 group relative"
                             >
-                                <div className="flex-grow pr-8">
-                                    <div className="flex items-center gap-3 text-sm text-gray-500 mb-2">
-                                        <Calendar className="w-4 h-4" />
+                                <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-xl overflow-hidden shrink-0 bg-gray-100 dark:bg-gray-700">
+                                    <img
+                                        src={item.recipe_generated.image_url || `https://source.unsplash.com/featured/200x200?food,${item.recipe_generated.cuisine || 'cooking'}`}
+                                        alt={item.recipe_generated.title}
+                                        className="w-full h-full object-cover transition-transform group-hover:scale-110"
+                                    />
+                                </div>
+
+                                <div className="flex-grow">
+                                    <div className="flex items-center gap-3 text-xs text-gray-500 mb-1.5">
+                                        <Calendar className="w-3.5 h-3.5" />
                                         {new Date(item.searched_at).toLocaleDateString()}
                                     </div>
-                                    <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-1">
+                                    <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-0.5 line-clamp-1">
                                         {item.recipe_generated.title}
                                     </h3>
-                                    <p className="text-gray-600 dark:text-gray-400 text-sm">
-                                        Search Query: "{item.query}"
+                                    <p className="text-gray-500 dark:text-gray-400 text-xs italic line-clamp-1">
+                                        "{item.query}"
                                     </p>
                                 </div>
                                 <div className="flex flex-col items-end gap-2">

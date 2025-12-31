@@ -19,6 +19,7 @@ class Recipe(BaseModel):
     cuisine: Optional[str] = None
     difficulty: str = "medium"
     tips: Optional[List[str]] = []
+    image_url: Optional[str] = None
 
 class SavedRecipe(BaseModel):
     """Saved recipe model"""

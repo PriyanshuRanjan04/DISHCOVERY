@@ -145,7 +145,7 @@ function RecipeCard({ recipe }: { recipe: any }) {
         <div className="glass rounded-2xl overflow-hidden card-hover cursor-pointer group h-full flex flex-col">
             <div className="h-48 relative overflow-hidden shrink-0">
                 <img
-                    src={recipe.image}
+                    src={recipe.image_url || recipe.image || `https://source.unsplash.com/featured/800x600?food,${recipe.title},${recipe.cuisine}`}
                     alt={recipe.title}
                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                 />

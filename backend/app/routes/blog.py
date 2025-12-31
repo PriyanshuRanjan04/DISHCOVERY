@@ -31,23 +31,24 @@ async def get_blog_posts(limit: int = 5, skip: int = 0):
     fallback = [
         {
             "_id": "fb1",
-            "title": "🥘 The Story Behind Butter Chicken",
-            "intro": "A dish that conquered the world from the heart of Delhi.",
-            "why_it_matters": "It represents the resourcefulness of Indian chefs in reinventing leftovers into a global sensation.",
-            "history_content": "Created by accident in the 1950s at Moti Mahal restaurant, cooks reused leftover tandoori chicken by simmering it in a rich tomato and butter sauce.",
+            "title": "🏮 Explore Punjab: The Heart of Sarson Ka Saag",
+            "intro": "A rustic winter feast from the lush fields of North India.",
+            "why_it_matters": "It's the ultimate comfort food for Punjabis, traditionally paired with Makki di Roti during the winter harvest.",
+            "history_content": "Sarson ka saag (mustard greens) has been a staple in agrarian Punjab for centuries. Slow-cooked in clay pots called 'handis', it reflects the slow-paced, nutritious farm-to-table lifestyle of the region.",
             "recipe_ingredients": [
-                {"name": "Chicken", "quantity": "1", "unit": "kg"},
-                {"name": "Tomato Puree", "quantity": "2", "unit": "cups"},
-                {"name": "Butter", "quantity": "100", "unit": "g"}
+                {"name": "Mustard Greens", "quantity": "500", "unit": "g"},
+                {"name": "Spinach", "quantity": "250", "unit": "g"},
+                {"name": "Maize Flour", "quantity": "2", "unit": "tbsp"},
+                {"name": "Ghee", "quantity": "50", "unit": "g"}
             ],
-            "recipe_instructions": ["Marinate chicken", "Prepare sauce", "Simmer until tender"],
-            "tips_variations": ["Use honey for sweetness", "Add more cream for richness"],
-            "conclusion": "A timeless classic that never fails to satisfy.",
-            "image_url": "https://images.unsplash.com/photo-1603894584202-7473796599b1?w=800&q=80",
-            "region": "Asia",
+            "recipe_instructions": ["Clean and chop greens", "Pressure cook with ginger and garlic", "Mash well and add maize flour", "Tadka with ghee and red chillies"],
+            "tips_variations": ["Use dollops of white butter for authenticity", "Add bathua leaves if available"],
+            "conclusion": "A hearty taste of Punjab that warms the soul.",
+            "image_url": "https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?w=800&q=80",
+            "region": "Punjab, India 🔥",
             "author_name": "Dishcovery Team",
             "created_at": datetime.utcnow(),
-            "tags": ["Indian", "History"]
+            "tags": ["Indian State", "Winter Special"]
         }
     ]
 

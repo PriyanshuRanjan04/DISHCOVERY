@@ -86,7 +86,7 @@ export default function PopularRecipesPage() {
                         >
                             <div className="h-56 relative overflow-hidden shrink-0">
                                 <img
-                                    src={recipe.image}
+                                    src={recipe.image_url || recipe.image || `https://source.unsplash.com/featured/800x600?food,${recipe.title},${recipe.cuisine}`}
                                     alt={recipe.title}
                                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                                 />
@@ -104,8 +104,8 @@ export default function PopularRecipesPage() {
                                         {recipe.cuisine}
                                     </span>
                                     <span className={`px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider rounded-md ${recipe.difficulty === 'easy' ? 'bg-green-100 text-green-600' :
-                                            recipe.difficulty === 'medium' ? 'bg-yellow-100 text-yellow-600' :
-                                                'bg-red-100 text-red-600'
+                                        recipe.difficulty === 'medium' ? 'bg-yellow-100 text-yellow-600' :
+                                            'bg-red-100 text-red-600'
                                         }`}>
                                         {recipe.difficulty}
                                     </span>

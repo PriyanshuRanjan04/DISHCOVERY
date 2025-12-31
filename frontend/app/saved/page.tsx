@@ -91,13 +91,19 @@ export default function SavedPage() {
                                 <Link
                                     key={item.id}
                                     href={`/search?q=${encodeURIComponent(recipe.title)}&savedId=${item.id}`}
-                                    className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm hover:shadow-md transition-shadow overflow-hidden group relative"
+                                    className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm hover:shadow-md transition-shadow overflow-hidden group relative flex flex-col"
                                 >
-                                    <div className="h-48 bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center relative">
-                                        <ChefHat className="w-16 h-16 text-primary/40" />
+                                    <div className="h-48 relative overflow-hidden shrink-0">
+                                        <img
+                                            src={recipe.image_url || recipe.image || `https://source.unsplash.com/featured/800x600?food,${recipe.cuisine || 'recipe'}`}
+                                            alt={recipe.title}
+                                            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                                        />
+                                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+
                                         <button
                                             onClick={(e) => handleDelete(item.id, e)}
-                                            className="absolute top-3 right-3 p-2 bg-white/90 rounded-full text-red-500 hover:bg-red-50 transition-colors opacity-0 group-hover:opacity-100"
+                                            className="absolute top-3 right-3 p-2 bg-white/90 dark:bg-gray-800/90 rounded-full text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all opacity-0 group-hover:opacity-100 z-10"
                                             title="Remove"
                                         >
                                             <Trash2 className="w-4 h-4" />

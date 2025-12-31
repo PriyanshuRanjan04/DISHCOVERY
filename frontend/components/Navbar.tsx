@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { UserButton, SignedIn, SignedOut } from '@clerk/nextjs'
-import { ChefHat, BookOpen, History, Heart } from 'lucide-react'
+import { ChefHat, Globe, History, Heart } from 'lucide-react'
 import { usePathname } from 'next/navigation'
 
 export default function Navbar() {
@@ -10,7 +10,7 @@ export default function Navbar() {
 
     const navLinks = [
         { name: 'Home', href: '/', icon: null },
-        { name: 'Blog', href: '/blog', icon: BookOpen },
+        { name: 'Cuisine Explorer', href: '/blog', icon: Globe },
         { name: 'History', href: '/history', icon: History, protected: true },
         { name: 'Saved', href: '/saved', icon: Heart, protected: true },
     ]
@@ -38,8 +38,8 @@ export default function Navbar() {
                                     key={link.name}
                                     href={link.href}
                                     className={`flex items-center gap-1.5 text-sm font-medium transition-all duration-200 py-2 border-b-2 ${isActive
-                                            ? 'text-primary border-primary'
-                                            : 'text-gray-600 dark:text-gray-400 border-transparent hover:text-primary'
+                                        ? 'text-primary border-primary'
+                                        : 'text-gray-600 dark:text-gray-400 border-transparent hover:text-primary'
                                         }`}
                                 >
                                     {Icon && <Icon className="w-4 h-4" />}

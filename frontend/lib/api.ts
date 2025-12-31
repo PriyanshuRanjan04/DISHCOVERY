@@ -120,8 +120,8 @@ export const userAPI = {
     },
 }
 
-// Blog API calls
-export const blogAPI = {
+// Cuisine Explorer API calls
+export const explorerAPI = {
     getPosts: async (limit?: number, skip?: number) => {
         const response = await apiClient.get('/api/blog/posts', {
             params: { limit, skip },
