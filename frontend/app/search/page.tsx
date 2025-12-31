@@ -8,6 +8,7 @@ import { Timer, Users, ChefHat, ArrowLeft, Loader2, Heart, Check, Sparkles } fro
 import { useUser } from '@clerk/nextjs'
 import SubstitutionHandler from '@/components/SubstitutionHandler'
 import LoadingTrivia from '@/components/LoadingTrivia'
+import CookingLoader from '@/components/CookingLoader'
 
 export default function SearchPage() {
     const searchParams = useSearchParams()
@@ -153,12 +154,10 @@ export default function SearchPage() {
     if (loading) {
         return (
             <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 dark:bg-gray-900 p-4">
-                <Loader2 className="w-16 h-16 text-primary animate-spin mb-6" />
-                <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-                    {statusMessage}
-                </h2>
-
-                <LoadingTrivia />
+                <CookingLoader />
+                <div className="w-full max-w-md border-t border-gray-100 dark:border-gray-700 mt-4">
+                    <LoadingTrivia />
+                </div>
             </div>
         )
     }
