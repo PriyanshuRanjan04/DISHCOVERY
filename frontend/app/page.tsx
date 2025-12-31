@@ -6,7 +6,20 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { recipeAPI } from '@/lib/api'
 
-const FEATURE_COLLECTIONS = {
+interface CollectionItem {
+    title: string;
+    tag: string;
+    content: string;
+    image: string;
+    cultural_note?: string;
+    recipe?: {
+        time: string;
+        ingredients: string[];
+        steps: string[];
+    };
+}
+
+const FEATURE_COLLECTIONS: Record<string, { title: string; description: string; items: CollectionItem[] }> = {
     stories: {
         title: "Stories Behind Dishes",
         description: "Uncover the deep history and cultural secrets behind dishes.",
