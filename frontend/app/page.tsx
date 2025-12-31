@@ -1,14 +1,94 @@
 'use client'
 
 import Link from 'next/link'
-import { Search, ChefHat, Sparkles, BookOpen, Utensils, IceCream } from 'lucide-react'
+import { Search, ChefHat, Sparkles, BookOpen, Utensils, IceCream, X, ExternalLink, Clock } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { recipeAPI } from '@/lib/api'
 
+const FEATURE_COLLECTIONS = {
+    stories: {
+        title: "Stories Behind Dishes",
+        description: "Uncover the deep history and cultural secrets behind dishes.",
+        items: [
+            {
+                title: "Hyderabadi Biryani",
+                tag: "Royal Heritage",
+                content: "A regal blend of Mughlai and Iranian flavors, born in the kitchens of the Nizams. It's not just a dish; it's a slow-cooking art called 'Dum'.",
+                image: "https://loremflickr.com/800/600/biryani,hyderabad/all",
+                cultural_note: "Traditionally served at royal weddings, representing the pinnacle of Deccani cuisine."
+            },
+            {
+                title: "Sushi Traditions",
+                tag: "Japanese Craft",
+                content: "Originating as a way to preserve fish in fermented rice, sushi evolved into a global symbol of precision and seasonal freshness.",
+                image: "https://loremflickr.com/800/600/sushi,japanese/all",
+                cultural_note: "The 'Edomae' style was actually a popular fast food in old Tokyo (Edo)!"
+            }
+        ]
+    },
+    everyday: {
+        title: "Everyday Meals",
+        description: "Quick, repeatable, and comforting home-cooked favorites.",
+        items: [
+            {
+                title: "Classic Dal Chawal",
+                tag: "Daily Comfort",
+                content: "The ultimate soul food. Tempered lentils served over fluffy white rice with a dollop of ghee.",
+                image: "https://loremflickr.com/800/600/dal,rice/all",
+                recipe: {
+                    time: "20 min",
+                    ingredients: ["Yellow Lentils", "Turmeric", "Cumin Seeds", "Garlic", "Ghee"],
+                    steps: ["Boil lentils with turmeric", "Sauté cumin and garlic in ghee", "Pour tadka over dal"]
+                }
+            },
+            {
+                title: "Pasta Aglio e Olio",
+                tag: "Pantry Staple",
+                content: "A simple Italian classic that relies on the quality of olive oil and garlic. Ready in minutes.",
+                image: "https://loremflickr.com/800/600/pasta,garlic/all",
+                recipe: {
+                    time: "12 min",
+                    ingredients: ["Spaghetti", "Extra Virgin Olive Oil", "Garlic", "Red Chili Flakes", "Parsley"],
+                    steps: ["Boil pasta", "Sauté thin garlic slices in oil", "Toss pasta with oil and flakes"]
+                }
+            }
+        ]
+    },
+    desserts: {
+        title: "Desserts",
+        description: "Tradition sweets and global treats for moments of joy.",
+        items: [
+            {
+                title: "Gulab Jamun",
+                tag: "Festive Sweet",
+                content: "Soft, golden-brown milk solids deep-fried and soaked in a fragrant saffron and cardamom syrup.",
+                image: "https://loremflickr.com/800/600/gulabjamun,dessert/all",
+                recipe: {
+                    time: "40 min",
+                    ingredients: ["Khoya (Milk Solids)", "All-purpose flour", "Sugar", "Cardamom", "Rose water"],
+                    steps: ["Make a soft dough", "Fry small balls until golden", "Soak in hot syrup for 2 hours"]
+                }
+            },
+            {
+                title: "Matcha Tiramisu",
+                tag: "Modern Twist",
+                content: "An elegant fusion of Italian mascarpone and Japanese green tea. Light, creamy, and sophisticated.",
+                image: "https://loremflickr.com/800/600/matcha,tiramisu/all",
+                recipe: {
+                    time: "30 min",
+                    ingredients: ["Mascarpone", "Matcha Powder", "Ladyfingers", "Cream", "Sugar"],
+                    steps: ["Whip cream and cheese", "Dip ladyfingers in matcha", "Layer and chill"]
+                }
+            }
+        ]
+    }
+}
+
 export default function HomePage() {
     const [query, setQuery] = useState('')
     const [popularRecipes, setPopularRecipes] = useState<any[]>([])
+    const [activeCollection, setActiveCollection] = useState<keyof typeof FEATURE_COLLECTIONS | null>(null)
     const router = useRouter()
 
     useEffect(() => {
@@ -80,22 +160,123 @@ export default function HomePage() {
                     </div>
                 </div>
 
+                {/* Collection Modal */}
+                {activeCollection && (
+                    <div
+                        className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/60 backdrop-blur-sm animate-in fade-in transition-all"
+                        onClick={() => setActiveCollection(null)}
+                    >
+                        <div
+                            className="bg-white dark:bg-gray-800 w-full max-w-4xl max-h-[90vh] rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col animate-in zoom-in-95 duration-300"
+                            onClick={(e) => e.stopPropagation()}
+                        >
+                            <div className="p-6 sm:p-8 border-b border-gray-100 dark:border-gray-700 flex justify-between items-center bg-gray-50/50 dark:bg-gray-900/50">
+                                <div>
+                                    <h2 className="text-3xl font-black text-gray-900 dark:text-white flex items-center gap-3">
+                                        {activeCollection === 'stories' && <BookOpen className="text-primary w-8 h-8" />}
+                                        {activeCollection === 'everyday' && <Utensils className="text-primary w-8 h-8" />}
+                                        {activeCollection === 'desserts' && <IceCream className="text-primary w-8 h-8" />}
+                                        {FEATURE_COLLECTIONS[activeCollection].title}
+                                    </h2>
+                                    <p className="text-gray-500 dark:text-gray-400 font-medium">{FEATURE_COLLECTIONS[activeCollection].description}</p>
+                                </div>
+                                <button
+                                    onClick={() => setActiveCollection(null)}
+                                    className="p-3 rounded-2xl bg-white dark:bg-gray-700 shadow-md hover:bg-gray-100 dark:hover:bg-gray-600 transition-all text-gray-500 hover:text-red-500"
+                                >
+                                    <X className="w-6 h-6" />
+                                </button>
+                            </div>
+
+                            <div className="flex-1 overflow-y-auto p-6 sm:p-8 space-y-12">
+                                {FEATURE_COLLECTIONS[activeCollection].items.map((item, idx) => (
+                                    <div key={idx} className="group grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+                                        <div className="relative rounded-[2rem] overflow-hidden shadow-xl aspect-[4/3]">
+                                            <img src={item.image} alt={item.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                                            <div className="absolute top-4 left-4 bg-white/90 dark:bg-gray-800/90 backdrop-blur px-4 py-1.5 rounded-full text-xs font-black text-primary uppercase tracking-widest shadow-lg">
+                                                {item.tag}
+                                            </div>
+                                        </div>
+                                        <div className="space-y-6">
+                                            <div className="space-y-2">
+                                                <h3 className="text-2xl font-black text-gray-900 dark:text-white leading-tight">{item.title}</h3>
+                                                <p className="text-gray-600 dark:text-gray-400 leading-relaxed text-lg font-medium">{item.content}</p>
+                                            </div>
+
+                                            {item.cultural_note && (
+                                                <div className="p-5 bg-orange-50 dark:bg-orange-900/20 border-l-4 border-orange-400 rounded-2xl italic text-orange-800 dark:text-orange-200 font-medium">
+                                                    " {item.cultural_note} "
+                                                </div>
+                                            )}
+
+                                            {item.recipe && (
+                                                <div className="bg-gray-50 dark:bg-gray-900/50 rounded-3xl p-6 space-y-4">
+                                                    <div className="flex items-center justify-between">
+                                                        <span className="text-xs font-black text-gray-400 uppercase tracking-widest flex items-center gap-2">
+                                                            <ChefHat className="w-4 h-4" /> Quick Recipe
+                                                        </span>
+                                                        <span className="text-xs font-black text-primary bg-primary/10 px-3 py-1 rounded-lg flex items-center gap-1.5">
+                                                            <Clock className="w-3.5 h-3.5" /> {item.recipe.time}
+                                                        </span>
+                                                    </div>
+                                                    <div className="space-y-3">
+                                                        <div className="flex flex-wrap gap-2">
+                                                            {item.recipe.ingredients.map(ing => (
+                                                                <span key={ing} className="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 px-3 py-1 rounded-xl text-xs font-bold text-gray-600 dark:text-gray-300">
+                                                                    {ing}
+                                                                </span>
+                                                            ))}
+                                                        </div>
+                                                        <ol className="space-y-2">
+                                                            {item.recipe.steps.map((step, sidx) => (
+                                                                <li key={sidx} className="text-sm text-gray-600 dark:text-gray-400 flex gap-3 font-medium">
+                                                                    <span className="text-primary font-bold">{sidx + 1}.</span> {step}
+                                                                </li>
+                                                            ))}
+                                                        </ol>
+                                                    </div>
+                                                </div>
+                                            )}
+
+                                            <button
+                                                onClick={() => router.push(`/search?q=${encodeURIComponent(item.title)}`)}
+                                                className="inline-flex items-center gap-2 text-primary hover:text-accent font-black text-sm uppercase tracking-wider group/link transition-all"
+                                            >
+                                                Explore Full Recipe <ExternalLink className="w-4 h-4 group-hover/link:translate-x-1 group-hover/link:-translate-y-1 transition-transform" />
+                                            </button>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+
+                            <div className="p-6 bg-gray-50/50 dark:bg-gray-900/50 border-t border-gray-100 dark:border-gray-700 text-center">
+                                <p className="text-sm text-gray-400 font-bold uppercase tracking-widest">
+                                    More daily updates in the Cuisine Explorer & Blog
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
                 {/* Features Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-24">
                     <FeatureCard
                         icon={<BookOpen className="w-8 h-8" />}
                         title="Stories Behind Dishes"
                         description="Uncover the deep history and cultural secrets behind dishes from every corner of the globe."
+                        onClick={() => setActiveCollection('stories')}
                     />
                     <FeatureCard
                         icon={<Utensils className="w-8 h-8" />}
                         title="Everyday Meals"
                         description="Reduce daily decision fatigue with quick, repeatable, and comforting home-cooked favorites."
+                        onClick={() => setActiveCollection('everyday')}
                     />
                     <FeatureCard
                         icon={<IceCream className="w-8 h-8" />}
-                        title="Desserts & Indulgence"
-                        description="Add joy to your table with traditional sweets, global treats, and festive delicacies."
+                        title="Desserts"
+                        description="Tradition sweets and global treats for moments of delight."
+                        onClick={() => setActiveCollection('desserts')}
                     />
                 </div>
 
@@ -128,9 +309,12 @@ export default function HomePage() {
     )
 }
 
-function FeatureCard({ icon, title, description }: { icon: React.ReactNode; title: string; description: string }) {
+function FeatureCard({ icon, title, description, onClick }: { icon: React.ReactNode; title: string; description: string; onClick?: () => void }) {
     return (
-        <div className="glass p-8 rounded-2xl card-hover">
+        <div
+            className={`glass p-8 rounded-2xl card-hover ${onClick ? 'cursor-pointer hover:border-primary/50' : ''}`}
+            onClick={onClick}
+        >
             <div className="w-16 h-16 bg-gradient-to-br from-primary to-accent rounded-xl flex items-center justify-center text-white mb-4">
                 {icon}
             </div>
