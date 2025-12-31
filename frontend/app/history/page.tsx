@@ -4,36 +4,65 @@ import { useEffect, useState } from 'react'
 import { useUser } from '@clerk/nextjs'
 import { userAPI } from '@/lib/api'
 import Link from 'next/link'
-import { History, ArrowLeft, Loader2, Calendar, ChevronRight } from 'lucide-react'
+import { History, ArrowLeft, Loader2, Calendar, ChevronRight, Trash2 } from 'lucide-react'
 
 export default function HistoryPage() {
     const { user, isLoaded } = useUser()
     const [history, setHistory] = useState<any[]>([])
     const [loading, setLoading] = useState(true)
 
-    useEffect(() => {
-        const fetchHistory = async () => {
-            if (!user) return
-            try {
-                const data = await userAPI.getHistory(user.id)
-                if (data.success) {
-                    setHistory(data.history)
-                }
-            } catch (err) {
-                console.error(err)
-            } finally {
-                setLoading(false)
+    const fetchHistory = async () => {
+        if (!user) return
+        try {
+            setLoading(true)
+            const data = await userAPI.getHistory(user.id)
+            if (data.success) {
+                setHistory(data.history)
             }
+        } catch (err) {
+            console.error(err)
+        } finally {
+            setLoading(false)
         }
+    }
 
+    useEffect(() => {
         if (isLoaded) {
             if (!user) {
-                setLoading(false) // Show message to sign in
+                setLoading(false)
             } else {
                 fetchHistory()
             }
         }
     }, [user, isLoaded])
+
+    const handleDelete = async (e: React.MouseEvent, id: string) => {
+        e.preventDefault() // Prevent link navigation
+        e.stopPropagation()
+        if (!user || !window.confirm("Are you sure you want to delete this memory? It can't be restored.")) return
+
+        try {
+            const res = await userAPI.deleteHistoryItem(user.id, id)
+            if (res.success) {
+                setHistory(history.filter(item => item.id !== id))
+            }
+        } catch (err) {
+            alert("Failed to delete history item")
+        }
+    }
+
+    const handleClearAll = async () => {
+        if (!user || !window.confirm("Are you sure you want to clear your ENTIRE discovery history? This cannot be undone.")) return
+
+        try {
+            const res = await userAPI.clearHistory(user.id)
+            if (res.success) {
+                setHistory([])
+            }
+        } catch (err) {
+            alert("Failed to clear history")
+        }
+    }
 
     return (
         <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-12 px-4 sm:px-6 lg:px-8">
@@ -46,11 +75,22 @@ export default function HistoryPage() {
                     Back to Home
                 </Link>
 
-                <div className="flex items-center gap-3 mb-8">
-                    <History className="w-8 h-8 text-primary" />
-                    <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-                        Discovery History
-                    </h1>
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
+                    <div className="flex items-center gap-3">
+                        <History className="w-8 h-8 text-primary" />
+                        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+                            Discovery History
+                        </h1>
+                    </div>
+                    {history.length > 0 && (
+                        <button
+                            onClick={handleClearAll}
+                            className="flex items-center gap-2 px-4 py-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-xl transition-all font-semibold text-sm border border-red-100 dark:border-red-900/30"
+                        >
+                            <Trash2 className="w-4 h-4" />
+                            Clear All History
+                        </button>
+                    )}
                 </div>
 
                 {loading ? (
@@ -76,9 +116,9 @@ export default function HistoryPage() {
                             <Link
                                 key={item.id}
                                 href={`/search?q=${encodeURIComponent(item.query)}`}
-                                className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm hover:shadow-md transition-shadow flex items-center justify-between group"
+                                className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm hover:shadow-md transition-shadow flex items-center justify-between group relative"
                             >
-                                <div>
+                                <div className="flex-grow pr-8">
                                     <div className="flex items-center gap-3 text-sm text-gray-500 mb-2">
                                         <Calendar className="w-4 h-4" />
                                         {new Date(item.searched_at).toLocaleDateString()}
@@ -90,8 +130,17 @@ export default function HistoryPage() {
                                         Search Query: "{item.query}"
                                     </p>
                                 </div>
-                                <div className="text-gray-400 group-hover:text-primary transition-colors">
-                                    <ChevronRight className="w-6 h-6" />
+                                <div className="flex flex-col items-end gap-2">
+                                    <button
+                                        onClick={(e) => handleDelete(e, item.id)}
+                                        className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-all"
+                                        title="Delete from history"
+                                    >
+                                        <Trash2 className="w-5 h-5" />
+                                    </button>
+                                    <div className="text-gray-400 group-hover:text-primary transition-colors">
+                                        <ChevronRight className="w-6 h-6" />
+                                    </div>
                                 </div>
                             </Link>
                         ))}

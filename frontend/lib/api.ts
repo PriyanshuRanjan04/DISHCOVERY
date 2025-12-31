@@ -83,6 +83,20 @@ export const userAPI = {
         return response.data
     },
 
+    deleteHistoryItem: async (userId: string, historyId: string) => {
+        const response = await apiClient.delete(`/api/users/history/${historyId}`, {
+            params: { user_id: userId }
+        })
+        return response.data
+    },
+
+    clearHistory: async (userId: string) => {
+        const response = await apiClient.delete('/api/users/history/clear', {
+            params: { user_id: userId }
+        })
+        return response.data
+    },
+
     saveRecipe: async (userId: string, recipe: any) => {
         const response = await apiClient.post('/api/users/save-recipe', {
             user_id: userId,

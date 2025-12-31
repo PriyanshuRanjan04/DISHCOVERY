@@ -46,8 +46,22 @@ async def get_user_history(user_id: str, limit: int = 20):
 
 @router.post("/save-recipe")
 async def save_recipe(request: SaveRecipeRequest):
-    """Save a recipe to user's collection"""
+    """Save a recipe to user's collection, preventing duplicates by title"""
     db = get_database()
+    
+    # Check if a recipe with the same title is already saved by this user
+    existing = await db.saved_recipes.find_one({
+        "user_id": request_id := request.user_id,
+        "recipe_data.title": request.recipe.get("title")
+    })
+    
+    if existing:
+        return {
+            "success": True,
+            "message": "Recipe already saved",
+            "recipe_id": str(existing["_id"]),
+            "already_saved": True
+        }
     
     saved_recipe = SavedRecipe(
         user_id=request.user_id,
@@ -123,4 +137,32 @@ async def get_saved_recipe(recipe_id: str, user_id: str):
     return {
         "success": True,
         "recipe": recipe
+    }
+
+@router.delete("/history/{history_id}")
+async def delete_history_item(history_id: str, user_id: str):
+    """Delete a specific history item"""
+    db = get_database()
+    from bson import ObjectId
+    
+    result = await db.search_history.delete_one({
+        "_id": ObjectId(history_id),
+        "user_id": user_id
+    })
+    
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="History item not found")
+        
+    return {"success": True, "message": "History item deleted"}
+
+@router.delete("/history/clear")
+async def clear_history(user_id: str):
+    """Clear all history for a user"""
+    db = get_database()
+    
+    result = await db.search_history.delete_many({"user_id": user_id})
+    
+    return {
+        "success": True, 
+        "message": f"Cleared {result.deleted_count} history items"
     }
