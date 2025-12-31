@@ -108,14 +108,31 @@ async def get_blog_posts(limit: int = 5, skip: int = 0):
             "source": "generated"
         }
         
-    except Exception as e:
-        print(f"Error in blog posts: {str(e)}")
+@router.get("/explore")
+async def explore_cuisines(
+    country: Optional[str] = None,
+    state: Optional[str] = None,
+    festival: Optional[str] = None,
+    taste: Optional[str] = None,
+    query: Optional[str] = None
+):
+    """Smart Cuisine Explorer: Discover dishes by geography, festival, and taste"""
+    try:
+        results = await langchain_service.generate_explore_results(
+            country=country,
+            state=state,
+            festival=festival,
+            taste=taste,
+            query=query
+        )
         return {
             "success": True,
-            "posts": fallback,
-            "count": len(fallback),
-            "error": str(e)
+            "results": results,
+            "count": len(results)
         }
+    except Exception as e:
+        print(f"Error in cuisine exploration: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
 
 @router.get("/posts/{post_id}")
 async def get_blog_post(post_id: str):

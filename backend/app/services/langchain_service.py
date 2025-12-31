@@ -196,6 +196,60 @@ Provide practical alternatives that maintain flavor and texture. Always respond 
         
         return adjusted_recipe
 
+    async def generate_explore_results(self, country: str = None, state: str = None, festival: str = None, taste: str = None, query: str = None) -> list:
+        """Discover dishes based on geography, festival, and taste"""
+        if not self.llm:
+            raise RuntimeError("LLM is not initialized.")
+
+        # Construct filters string for the prompt
+        filters = []
+        if country: filters.append(f"Country: {country}")
+        if state: filters.append(f"Indian State: {state}")
+        if festival: filters.append(f"Festival: {festival}")
+        if taste: filters.append(f"Taste Profile: {taste}")
+        if query: filters.append(f"Additional Request: {query}")
+        
+        filter_str = ", ".join(filters) if filters else "General global cuisine"
+
+        prompt = ChatPromptTemplate.from_messages([
+            ("system", """You are a 'Smart Cuisine Explorer' for Dishcovery. 
+Your goal is to suggest 5 specific, authentic dishes that match the user's filters perfectly.
+
+Respond in strict JSON format:
+{
+  "results": [
+    {
+      "title": "Emoji + Dish Name",
+      "intro": "Brief engaging intro (1 line)",
+      "cultural_context": "Cultural or historical significance of this dish (1-2 lines)",
+      "taste_profile": "Describe the flavors (e.g., Spicy & Tangy, Sweet & Creamy)",
+      "highlights": ["Key ingredients or features"],
+      "region": "Specific region/origin name",
+      "image_keywords": "2-3 keywords for a realistic food photo search"
+    }
+  ]
+}"""),
+            ("human", f"Discover 5 unique dishes matching these criteria: {filter_str}")
+        ])
+
+        chain = prompt | self.llm
+        response = await chain.ainvoke({})
+        
+        content = response.content
+        json_match = re.search(r'\{.*\}', content, re.DOTALL)
+        if json_match:
+            data = json.loads(json_match.group())
+        else:
+            data = json.loads(content)
+        
+        results = data.get("results", [])
+        
+        for dish in results:
+            keywords = dish.get("image_keywords", "food")
+            dish["image_url"] = f"https://source.unsplash.com/featured/800x600?food,{keywords.replace(' ', ',')}"
+            
+        return results
+
     async def generate_daily_stories(self) -> list:
         """Generate 5 daily food history stories from different regions with recipes"""
         if not self.llm:

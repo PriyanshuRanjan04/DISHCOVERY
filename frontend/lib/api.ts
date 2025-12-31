@@ -143,6 +143,13 @@ export const explorerAPI = {
         const response = await apiClient.post(`/api/blog/posts/${postId}/comments`, { comment })
         return response.data
     },
+
+    explore: async (params: { country?: string; state?: string; festival?: string; taste?: string; query?: string }) => {
+        const response = await apiClient.get('/api/blog/explore', {
+            params,
+        })
+        return response.data
+    },
 }
 
 export default apiClient
