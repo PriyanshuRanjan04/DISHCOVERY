@@ -46,19 +46,18 @@ async def get_blog_posts(limit: int = 5, skip: int = 0):
     try:
         existing_stories = await db.daily_stories.find({"date_key": today_str}).to_list(length=10)
     
-    if existing_stories:
-        # Convert _id to string for JSON serialization
-        for s in existing_stories:
-            s["_id"] = str(s["_id"])
-        return {
-            "success": True,
-            "posts": existing_stories,
-            "count": len(existing_stories),
-            "source": "cache"
-        }
-    
-    # 2. If not, generate new ones using AI
-    try:
+        if existing_stories:
+            # Convert _id to string for JSON serialization
+            for s in existing_stories:
+                s["_id"] = str(s["_id"])
+            return {
+                "success": True,
+                "posts": existing_stories,
+                "count": len(existing_stories),
+                "source": "cache"
+            }
+        
+        # 2. If not, generate new ones using AI
         new_stories_data = await langchain_service.generate_daily_stories()
         
         # Prepare for database
