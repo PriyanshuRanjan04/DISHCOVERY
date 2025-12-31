@@ -9,7 +9,7 @@ const API_URL = process.env.NODE_ENV === 'production'
 // Create axios instance with default config
 const apiClient = axios.create({
     baseURL: API_URL,
-    timeout: 60000, // Increased to 60 seconds to handle slow cold starts and AI generation
+    timeout: 90000, // Increased to 90 seconds to handle slow cold starts and AI generation
     headers: {
         'Content-Type': 'application/json',
     },

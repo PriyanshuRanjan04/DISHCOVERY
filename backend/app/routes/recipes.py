@@ -122,6 +122,9 @@ async def search_recipes(request: SearchRequest, background_tasks: BackgroundTas
         }
         
     except Exception as e:
+        print(f"SEARCH ERROR: {str(e)}")
+        import traceback
+        traceback.print_exc()
         raise HTTPException(status_code=500, detail=f"Search initialization failed: {str(e)}")
 
 @router.get("/status/{query}")

@@ -19,6 +19,8 @@ async def connect_to_mongo():
         serverSelectionTimeoutMS=10000
     )
     db.db = db.client[settings.mongodb_db_name]
+    # Verify connection
+    await db.db.command("ping")
     print("Connected to MongoDB!")
 
 async def close_mongo_connection():

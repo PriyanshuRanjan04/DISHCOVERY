@@ -2,35 +2,32 @@ import os
 # CRITICAL: This must be set BEFORE importing langchain_google_genai
 os.environ["GOOGLE_API_VERSION"] = "v1"
 
-from langchain_google_genai import ChatGoogleGenerativeAI
-from langchain_openai import ChatOpenAI
-from langchain_groq import ChatGroq
 from langchain_core.prompts import ChatPromptTemplate
 from ..config import settings
 import json
 import re
-import google.generativeai as genai
 
 class LangChainService:
     """Service for LangChain LLM operations"""
     
     def __init__(self):
-        self.llm = self._initialize_llm()
+        self.llm = None
+        # We'll initialize on demand or here, but carefully
+        try:
+            self.llm = self._initialize_llm()
+        except Exception as e:
+            print(f"CRITICAL: Failed to initialize LLM: {str(e)}")
 
     def _initialize_llm(self):
         provider = settings.llm_provider.lower()
         
         if provider == "gemini":
-            if not settings.gemini_api_key:
-                print("WARNING: GEMINI_API_KEY not found. LLM features may fail.")
+            from langchain_google_genai import ChatGoogleGenerativeAI
+            import google.generativeai as genai
             
-            # Diagnostic: List available models (optional)
-            try:
-                genai.configure(api_key=settings.gemini_api_key)
-                # Note: listing models can be slow, removed for performance
-            except Exception as e:
-                print(f"DEBUG: Could not configure Gemini: {str(e)}")
-
+            if not settings.gemini_api_key:
+                print("WARNING: GEMINI_API_KEY not found.")
+            
             return ChatGoogleGenerativeAI(
                 model=settings.gemini_model_name,
                 google_api_key=settings.gemini_api_key,
@@ -38,6 +35,7 @@ class LangChainService:
             )
         
         elif provider == "openai":
+            from langchain_openai import ChatOpenAI
             if not settings.openai_api_key:
                 print("WARNING: OPENAI_API_KEY not found.")
             return ChatOpenAI(
@@ -47,6 +45,12 @@ class LangChainService:
             )
             
         elif provider == "groq":
+            try:
+                from langchain_groq import ChatGroq
+            except ImportError:
+                print("ERROR: langchain-groq not installed. Fallback to Gemini if possible.")
+                raise ImportError("langchain-groq is required for Groq provider.")
+                
             if not settings.groq_api_key:
                 print("WARNING: GROQ_API_KEY not found.")
             return ChatGroq(
@@ -59,6 +63,16 @@ class LangChainService:
     
     async def generate_recipe(self, query: str, servings: int = 4) -> dict:
         """Generate a recipe based on user query using LLM"""
+        if not self.llm:
+            # Try to re-initialize in case it was a transient error or late config
+            try:
+                self.llm = self._initialize_llm()
+            except Exception as e:
+                raise RuntimeError(f"LLM (Provider: {settings.llm_provider}) could not be initialized: {str(e)}")
+        
+        if not self.llm:
+            raise RuntimeError(f"LLM is not available. Please verify your {settings.llm_provider.upper()} API Key.")
+
         import time
         start_time = time.time()
         print(f"DEBUG: Starting recipe generation for '{query}'...")
@@ -107,6 +121,8 @@ Structure:
     
     async def get_ingredient_alternatives(self, ingredient: str, recipe_context: str) -> list:
         """Get alternative ingredients using LLM"""
+        if not self.llm:
+            raise RuntimeError("LLM is not initialized.")
         
         prompt = ChatPromptTemplate.from_messages([
             ("system", """You are a culinary expert specializing in ingredient substitutions.

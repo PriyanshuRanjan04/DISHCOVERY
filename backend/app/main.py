@@ -1,4 +1,5 @@
 from fastapi import FastAPI, Request, HTTPException
+from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from .config import settings
 from .database import connect_to_mongo, close_mongo_connection, get_database
@@ -17,19 +18,25 @@ app = FastAPI(
 async def global_exception_handler(request: Request, exc: Exception):
     print(f"CRITICAL ERROR: {str(exc)}", file=sys.stderr)
     traceback.print_exc()
-    return {
-        "success": False,
-        "detail": f"Internal Server Error: {str(exc)}",
-        "type": type(exc).__name__
-    }
+    return JSONResponse(
+        status_code=500,
+        content={
+            "success": False,
+            "detail": f"Internal Server Error: {str(exc)}",
+            "type": type(exc).__name__
+        }
+    )
 
 # Specific handler for HTTPException to keep their custom status codes
 @app.exception_handler(HTTPException)
 async def http_exception_handler(request: Request, exc: HTTPException):
-    return {
-        "success": False,
-        "detail": exc.detail
-    }
+    return JSONResponse(
+        status_code=exc.status_code,
+        content={
+            "success": False,
+            "detail": exc.detail
+        }
+    )
 
 # CORS Configuration
 app.add_middleware(
