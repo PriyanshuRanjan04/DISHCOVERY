@@ -11,8 +11,10 @@ class Settings(BaseSettings):
     clerk_secret_key: str = "••••••••••••••••••••••••••••••••••••••••••••••••••"
 
     # LLM APIs
+    llm_provider: str = "gemini"  # options: "gemini", "openai", "groq"
     gemini_api_key: str = ""
-    openai_api_key: str = ""  # Optional
+    openai_api_key: str = ""
+    groq_api_key: str = ""
 
     # Email
     resend_api_key: str = ""

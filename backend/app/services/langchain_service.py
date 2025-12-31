@@ -3,6 +3,8 @@ import os
 os.environ["GOOGLE_API_VERSION"] = "v1"
 
 from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain_openai import ChatOpenAI
+from langchain_groq import ChatGroq
 from langchain_core.prompts import ChatPromptTemplate
 from ..config import settings
 import json
@@ -13,22 +15,47 @@ class LangChainService:
     """Service for LangChain LLM operations"""
     
     def __init__(self):
-        # Diagnostic: List available models to find the right name
-        try:
-            genai.configure(api_key=settings.gemini_api_key)
-            print("DEBUG: Checking available models...")
-            models = [m.name for m in genai.list_models()]
-            print(f"DEBUG: Available models: {models}")
-        except Exception as e:
-            print(f"DEBUG: Could not list models: {str(e)}")
+        self.llm = self._initialize_llm()
 
-        # Initialize Gemini with the newest available model from the diagnostic
-        # Using gemini-2.5-flash which is confirmed available
-        self.llm = ChatGoogleGenerativeAI(
-            model="gemini-2.5-flash",
-            google_api_key=settings.gemini_api_key,
-            temperature=0.7
-        )
+    def _initialize_llm(self):
+        provider = settings.llm_provider.lower()
+        
+        if provider == "gemini":
+            if not settings.gemini_api_key:
+                print("WARNING: GEMINI_API_KEY not found. LLM features may fail.")
+            
+            # Diagnostic: List available models (optional)
+            try:
+                genai.configure(api_key=settings.gemini_api_key)
+                # Note: listing models can be slow, removed for performance
+            except Exception as e:
+                print(f"DEBUG: Could not configure Gemini: {str(e)}")
+
+            return ChatGoogleGenerativeAI(
+                model="gemini-1.5-flash",
+                google_api_key=settings.gemini_api_key,
+                temperature=0.7
+            )
+        
+        elif provider == "openai":
+            if not settings.openai_api_key:
+                print("WARNING: OPENAI_API_KEY not found.")
+            return ChatOpenAI(
+                model="gpt-4o-mini",
+                api_key=settings.openai_api_key,
+                temperature=0.7
+            )
+            
+        elif provider == "groq":
+            if not settings.groq_api_key:
+                print("WARNING: GROQ_API_KEY not found.")
+            return ChatGroq(
+                model="llama-3.3-70b-versatile",
+                api_key=settings.groq_api_key,
+                temperature=0.7
+            )
+        else:
+            raise ValueError(f"Unsupported LLM provider: {provider}")
     
     async def generate_recipe(self, query: str, servings: int = 4) -> dict:
         """Generate a recipe based on user query using LLM"""
