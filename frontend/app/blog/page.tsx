@@ -250,38 +250,9 @@ export default function CuisineExplorerPage() {
                         </div>
                     </div>
 
-                    {/* Dietary Preference & Taste Profile */}
+                    {/* Filters Layout: Taste Profile (Left) & Dietary Preference (Right) */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-6 border-t border-gray-100 dark:border-gray-700">
-                        {/* Dietary Preference */}
-                        <div className="space-y-4">
-                            <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider">
-                                Dietary Preference
-                            </label>
-                            <div className="flex gap-3">
-                                <button
-                                    type="button"
-                                    onClick={() => setDiet(diet === 'Veg' ? '' : 'Veg')}
-                                    className={`flex-1 py-3 rounded-2xl text-sm font-bold transition-all duration-300 border-2 ${diet === 'Veg'
-                                        ? 'bg-green-500 border-green-500 text-white shadow-lg shadow-green-500/20 scale-105'
-                                        : 'bg-gray-50 dark:bg-gray-900/50 border-transparent text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800'
-                                        }`}
-                                >
-                                    🥗 VEG
-                                </button>
-                                <button
-                                    type="button"
-                                    onClick={() => setDiet(diet === 'Non-Veg' ? '' : 'Non-Veg')}
-                                    className={`flex-1 py-3 rounded-2xl text-sm font-bold transition-all duration-300 border-2 ${diet === 'Non-Veg'
-                                        ? 'bg-red-500 border-red-500 text-white shadow-lg shadow-red-500/20 scale-105'
-                                        : 'bg-gray-50 dark:bg-gray-900/50 border-transparent text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800'
-                                        }`}
-                                >
-                                    🍗 NON-VEG
-                                </button>
-                            </div>
-                        </div>
-
-                        {/* Taste Profile */}
+                        {/* Taste Profile (Left) */}
                         <div className="space-y-4">
                             <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider">
                                 Explore by Taste
@@ -292,7 +263,7 @@ export default function CuisineExplorerPage() {
                                         key={chip.value}
                                         type="button"
                                         onClick={() => toggleTaste(chip.value)}
-                                        className={`px-4 py-2 rounded-xl text-xs font-bold transition-all duration-300 ${selectedTastes.includes(chip.value)
+                                        className={`px-6 py-3 rounded-2xl text-sm font-bold transition-all duration-300 ${selectedTastes.includes(chip.value)
                                             ? 'bg-primary text-white shadow-lg shadow-primary/30 scale-105'
                                             : 'bg-gray-50 dark:bg-gray-900/50 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800'
                                             }`}
@@ -300,6 +271,37 @@ export default function CuisineExplorerPage() {
                                         {chip.label}
                                     </button>
                                 ))}
+                            </div>
+                        </div>
+
+                        {/* Dietary Preference (Right) */}
+                        <div className="space-y-4">
+                            <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider">
+                                Dietary Preference
+                            </label>
+                            <div className="flex gap-4">
+                                <button
+                                    type="button"
+                                    onClick={() => setDiet(diet === 'Veg' ? '' : 'Veg')}
+                                    className={`relative flex items-center justify-center gap-2 max-w-[140px] w-full py-3 rounded-2xl text-xs font-black transition-all duration-300 border-2 ${diet === 'Veg'
+                                        ? 'bg-green-500 border-green-500 text-white shadow-lg shadow-green-500/20 scale-105'
+                                        : 'bg-gray-50 dark:bg-gray-900/50 border-transparent text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800'
+                                        }`}
+                                >
+                                    <span className={`w-2 h-2 rounded-full ${diet === 'Veg' ? 'bg-white' : 'bg-green-500'}`} />
+                                    VEG
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => setDiet(diet === 'Non-Veg' ? '' : 'Non-Veg')}
+                                    className={`relative flex items-center justify-center gap-2 max-w-[140px] w-full py-3 rounded-2xl text-xs font-black transition-all duration-300 border-2 ${diet === 'Non-Veg'
+                                        ? 'bg-red-500 border-red-500 text-white shadow-lg shadow-red-500/20 scale-105'
+                                        : 'bg-gray-50 dark:bg-gray-900/50 border-transparent text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800'
+                                        }`}
+                                >
+                                    <span className={`w-2 h-2 rounded-full ${diet === 'Non-Veg' ? 'bg-white' : 'bg-red-500'}`} />
+                                    NON-VEG
+                                </button>
                             </div>
                         </div>
                     </div>
