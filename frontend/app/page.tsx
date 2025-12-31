@@ -583,7 +583,7 @@ function RecipeCard({ recipe }: { recipe: any }) {
         <div className="glass rounded-2xl overflow-hidden card-hover cursor-pointer group h-full flex flex-col">
             <div className="h-48 relative overflow-hidden shrink-0">
                 <img
-                    src={recipe.image_url || recipe.image || `https://loremflickr.com/800/600/food,${recipe.title.replace(/\s+/g, ',')},${recipe.cuisine}`}
+                    src={recipe.image_url || recipe.image || `https://loremflickr.com/800/600/dish,food,${recipe.title.replace(/\s+/g, ',').toLowerCase()}`}
                     alt={recipe.title}
                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                 />
