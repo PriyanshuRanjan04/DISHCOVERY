@@ -11,20 +11,14 @@ from app.config import settings
 
 async def test_ai_connection():
     print(f"--- AI Connection Test ---")
-    print(f"Provider: {settings.llm_provider}")
     
-    import google.generativeai as genai
-    genai.configure(api_key=settings.gemini_api_key)
-    
-    print("\nListing ALL available models for your API key:")
-    try:
-        for m in genai.list_models():
-            if 'generateContent' in m.supported_generation_methods:
-                print(f"- {m.name} (Supports generateContent)")
-            else:
-                print(f"- {m.name}")
-    except Exception as e:
-        print(f"Could not list models: {str(e)}")
+    if settings.openai_api_key:
+        print("Provider: OpenAI [DETECTED]")
+    elif settings.groq_api_key:
+        print("Provider: Groq [DETECTED]")
+    else:
+        print("Provider: NONE [ERROR: Missing API Keys]")
+        return
 
     service = LangChainService()
     # ... rest of the script

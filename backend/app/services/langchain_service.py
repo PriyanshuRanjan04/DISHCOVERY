@@ -6,7 +6,7 @@ import json
 import re
 
 class LangChainService:
-    """Service for LangChain LLM operations"""
+    """Service for LangChain LLM operations using OpenAI (Primary) or Groq (Fallback)"""
     
     def __init__(self):
         self.llm = None
@@ -17,56 +17,29 @@ class LangChainService:
             print(f"CRITICAL: Failed to initialize LLM: {str(e)}")
 
     def _initialize_llm(self):
-        provider = settings.llm_provider.lower()
-        
-        if provider == "gemini":
-            from langchain_google_genai import ChatGoogleGenerativeAI
-            import google.generativeai as genai
-            
-            if not settings.gemini_api_key:
-                print("WARNING: GEMINI_API_KEY not found.")
-            
-            try:
-                print(f"DEBUG: Initializing Gemini with model: {settings.gemini_model_name}")
-                return ChatGoogleGenerativeAI(
-                    model=settings.gemini_model_name,
-                    google_api_key=settings.gemini_api_key,
-                    temperature=0.7
-                )
-            except Exception as e:
-                print(f"WARNING: Preferred Gemini model failed ({str(e)}). Falling back to gemini-1.5-flash.")
-                return ChatGoogleGenerativeAI(
-                    model="gemini-1.5-flash",
-                    google_api_key=settings.gemini_api_key,
-                    temperature=0.7
-                )
-        
-        elif provider == "openai":
+        # OpenAI is primary, Groq is secondary
+        if settings.openai_api_key:
             from langchain_openai import ChatOpenAI
-            if not settings.openai_api_key:
-                print("WARNING: OPENAI_API_KEY not found.")
+            print("DEBUG: Initializing OpenAI with model: gpt-4o-mini")
             return ChatOpenAI(
                 model="gpt-4o-mini",
                 api_key=settings.openai_api_key,
                 temperature=0.7
             )
-            
-        elif provider == "groq":
+        elif settings.groq_api_key:
             try:
                 from langchain_groq import ChatGroq
+                print("DEBUG: Initializing Groq with model: llama-3.3-70b-versatile")
+                return ChatGroq(
+                    model="llama-3.3-70b-versatile",
+                    api_key=settings.groq_api_key,
+                    temperature=0.7
+                )
             except ImportError:
-                print("ERROR: langchain-groq not installed. Fallback to Gemini if possible.")
                 raise ImportError("langchain-groq is required for Groq provider.")
-                
-            if not settings.groq_api_key:
-                print("WARNING: GROQ_API_KEY not found.")
-            return ChatGroq(
-                model="llama-3.3-70b-versatile",
-                api_key=settings.groq_api_key,
-                temperature=0.7
-            )
         else:
-            raise ValueError(f"Unsupported LLM provider: {provider}")
+            print("WARNING: Neither OPENAI_API_KEY nor GROQ_API_KEY found.")
+            return None
     
     async def generate_recipe(self, query: str, servings: int = 4) -> dict:
         """Generate a recipe based on user query using LLM"""
@@ -75,10 +48,10 @@ class LangChainService:
             try:
                 self.llm = self._initialize_llm()
             except Exception as e:
-                raise RuntimeError(f"LLM (Provider: {settings.llm_provider}) could not be initialized: {str(e)}")
+                raise RuntimeError(f"LLM could not be initialized: {str(e)}")
         
         if not self.llm:
-            raise RuntimeError(f"LLM is not available. Please verify your {settings.llm_provider.upper()} API Key.")
+            raise RuntimeError("LLM is not available. Please verify your OPENAI_API_KEY or GROQ_API_KEY.")
 
         import time
         start_time = time.time()
