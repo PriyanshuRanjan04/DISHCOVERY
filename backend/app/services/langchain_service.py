@@ -1,6 +1,7 @@
 import os
 
 from langchain_core.prompts import ChatPromptTemplate
+from langchain_core.messages import SystemMessage, HumanMessage
 from ..config import settings
 import json
 import re
@@ -211,14 +212,13 @@ Provide practical alternatives that maintain flavor and texture. Always respond 
         
         filter_str = ", ".join(filters) if filters else "General global cuisine"
 
-        prompt = ChatPromptTemplate.from_messages([
-            ("system", """You are a 'Smart Cuisine Explorer' for Dishcovery. 
+        system_content = """You are a 'Smart Cuisine Explorer' for Dishcovery. 
 Your goal is to suggest 5 specific, authentic dishes that match the user's filters perfectly.
 
-Respond in strict JSON format:
-{{
+Respond ONLY in strict JSON format with this structure:
+{
   "results": [
-    {{
+    {
       "title": "Emoji + Dish Name",
       "intro": "Brief engaging intro (1 line)",
       "cultural_context": "Cultural or historical significance of this dish (1-2 lines)",
@@ -226,14 +226,16 @@ Respond in strict JSON format:
       "highlights": ["Key ingredients or features"],
       "region": "Specific region/origin name",
       "image_keywords": "2-3 keywords for a realistic food photo search"
-    }}
+    }
   ]
-}}"""),
-            ("human", f"Discover 5 unique dishes matching these criteria: {filter_str}")
-        ])
+}"""
 
-        chain = prompt | self.llm
-        response = await chain.ainvoke({})
+        messages = [
+            SystemMessage(content=system_content),
+            HumanMessage(content=f"Discover 5 unique dishes matching these criteria: {filter_str}")
+        ]
+
+        response = await self.llm.ainvoke(messages)
         
         content = response.content
         json_match = re.search(r'\{.*\}', content, re.DOTALL)
