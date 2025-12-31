@@ -1,8 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { UserButton, SignedIn, SignedOut } from '@clerk/nextjs'
-import { Search, ChefHat, BookOpen, History, Heart, Sparkles } from 'lucide-react'
+import { Search, ChefHat, Sparkles } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { recipeAPI } from '@/lib/api'
@@ -35,54 +34,6 @@ export default function HomePage() {
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-green-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
-            {/* Navigation */}
-            <nav className="border-b border-gray-200 dark:border-gray-700 backdrop-blur-sm bg-white/70 dark:bg-gray-900/70 sticky top-0 z-50">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="flex justify-between items-center h-16">
-                        <div className="flex items-center space-x-2">
-                            <ChefHat className="w-8 h-8 text-primary" />
-                            <span className="text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-                                Dishcovery
-                            </span>
-                        </div>
-
-                        <div className="hidden md:flex items-center space-x-6">
-                            <Link href="/" className="text-gray-700 dark:text-gray-300 hover:text-primary transition-colors">
-                                Home
-                            </Link>
-                            <Link href="/blog" className="text-gray-700 dark:text-gray-300 hover:text-primary transition-colors flex items-center gap-1">
-                                <BookOpen className="w-4 h-4" />
-                                Blog
-                            </Link>
-                            <SignedIn>
-                                <Link href="/history" className="text-gray-700 dark:text-gray-300 hover:text-primary transition-colors flex items-center gap-1">
-                                    <History className="w-4 h-4" />
-                                    History
-                                </Link>
-                                <Link href="/saved" className="text-gray-700 dark:text-gray-300 hover:text-primary transition-colors flex items-center gap-1">
-                                    <Heart className="w-4 h-4" />
-                                    Saved
-                                </Link>
-                            </SignedIn>
-                        </div>
-
-                        <div className="flex items-center space-x-4">
-                            <SignedIn>
-                                <UserButton afterSignOutUrl="/" />
-                            </SignedIn>
-                            <SignedOut>
-                                <Link
-                                    href="/sign-in"
-                                    className="px-4 py-2 rounded-lg bg-gradient-to-r from-primary to-accent text-white font-semibold hover:scale-105 transition-transform"
-                                >
-                                    Sign In
-                                </Link>
-                            </SignedOut>
-                        </div>
-                    </div>
-                </div>
-            </nav>
-
             {/* Hero Section */}
             <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
                 <div className="text-center space-y-6 fade-in">
