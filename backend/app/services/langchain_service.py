@@ -197,7 +197,7 @@ Provide practical alternatives that maintain flavor and texture. Always respond 
         
         return adjusted_recipe
 
-    async def generate_explore_results(self, country: str = None, state: str = None, festival: str = None, taste: str = None, query: str = None) -> list:
+    async def generate_explore_results(self, country: str = None, state: str = None, festival: str = None, taste: str = None, query: str = None, diet: str = None) -> list:
         """Discover dishes based on geography, festival, and taste"""
         if not self.llm:
             raise RuntimeError("LLM is not initialized.")
@@ -208,6 +208,7 @@ Provide practical alternatives that maintain flavor and texture. Always respond 
         if state: filters.append(f"Indian State: {state}")
         if festival: filters.append(f"Festival: {festival}")
         if taste: filters.append(f"Taste Profile: {taste}")
+        if diet: filters.append(f"Dietary Preference: {diet}")
         if query: filters.append(f"Additional Request: {query}")
         
         filter_str = ", ".join(filters) if filters else "General global cuisine"

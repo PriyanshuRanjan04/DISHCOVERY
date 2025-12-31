@@ -122,7 +122,8 @@ async def explore_cuisines(
     state: Optional[str] = None,
     festival: Optional[str] = None,
     taste: Optional[str] = None,
-    query: Optional[str] = None
+    query: Optional[str] = None,
+    diet: Optional[str] = None
 ):
     """Smart Cuisine Explorer: Discover dishes by geography, festival, and taste"""
     try:
@@ -131,7 +132,8 @@ async def explore_cuisines(
             state=state,
             festival=festival,
             taste=taste,
-            query=query
+            query=query,
+            diet=diet
         )
         return {
             "success": True,

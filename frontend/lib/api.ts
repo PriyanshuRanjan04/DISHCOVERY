@@ -144,7 +144,7 @@ export const explorerAPI = {
         return response.data
     },
 
-    explore: async (params: { country?: string; state?: string; festival?: string; taste?: string; query?: string }) => {
+    explore: async (params: { country?: string; state?: string; festival?: string; taste?: string; query?: string; diet?: string }) => {
         const response = await apiClient.get('/api/blog/explore', {
             params,
         })
