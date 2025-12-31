@@ -17,6 +17,10 @@ const TASTE_CHIPS = [
     { label: "🥗 Healthy", value: "healthy" }
 ]
 
+const SUGGESTED_COUNTRIES = ["Italy", "Japan", "Mexico", "Thailand", "India", "France", "China", "Greece", "Spain", "Lebanon"]
+const SUGGESTED_STATES = ["Punjab", "Kerala", "West Bengal", "Tamil Nadu", "Maharashtra", "Rajasthan", "Gujarat", "Karnataka", "Assam", "Goa"]
+const SUGGESTED_FESTIVALS = ["Diwali", "Eid", "Holi", "Christmas", "Pongal", "Onam", "Lunar New Year", "Thanksgiving"]
+
 export default function CuisineExplorerPage() {
     // Featured Posts state
     const [posts, setPosts] = useState<any[]>([])
@@ -147,18 +151,27 @@ export default function CuisineExplorerPage() {
                             <div className="space-y-3">
                                 <input
                                     type="text"
+                                    list="country-list"
                                     placeholder="Enter Country (e.g. Italy, Japan)"
                                     className="w-full bg-gray-50 dark:bg-gray-900/50 border-0 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary transition-all"
                                     value={country}
                                     onChange={(e) => setCountry(e.target.value)}
                                 />
+                                <datalist id="country-list">
+                                    {SUGGESTED_COUNTRIES.map(c => <option key={c} value={c} />)}
+                                </datalist>
+
                                 <input
                                     type="text"
+                                    list="state-list"
                                     placeholder="Enter Indian State (e.g. Kerala)"
                                     className="w-full bg-gray-50 dark:bg-gray-900/50 border-0 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary transition-all"
                                     value={indianState}
                                     onChange={(e) => setIndianState(e.target.value)}
                                 />
+                                <datalist id="state-list">
+                                    {SUGGESTED_STATES.map(s => <option key={s} value={s} />)}
+                                </datalist>
                             </div>
                         </div>
 
@@ -170,11 +183,15 @@ export default function CuisineExplorerPage() {
                             </label>
                             <input
                                 type="text"
+                                list="festival-list"
                                 placeholder="Festival (e.g. Diwali, Holi)"
                                 className="w-full bg-gray-50 dark:bg-gray-900/50 border-0 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary transition-all"
                                 value={festival}
                                 onChange={(e) => setFestival(e.target.value)}
                             />
+                            <datalist id="festival-list">
+                                {SUGGESTED_FESTIVALS.map(f => <option key={f} value={f} />)}
+                            </datalist>
                             <p className="text-xs text-gray-400 italic">Example: Eid, Christmas, Pongal, Lunar New Year</p>
                         </div>
 
@@ -206,8 +223,8 @@ export default function CuisineExplorerPage() {
                                     type="button"
                                     onClick={() => toggleTaste(chip.value)}
                                     className={`px-5 py-2.5 rounded-2xl text-sm font-bold transition-all duration-300 ${selectedTastes.includes(chip.value)
-                                            ? 'bg-primary text-white shadow-lg shadow-primary/30 scale-105'
-                                            : 'bg-gray-50 dark:bg-gray-900/50 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-900'
+                                        ? 'bg-primary text-white shadow-lg shadow-primary/30 scale-105'
+                                        : 'bg-gray-50 dark:bg-gray-900/50 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-900'
                                         }`}
                                 >
                                     {chip.label}

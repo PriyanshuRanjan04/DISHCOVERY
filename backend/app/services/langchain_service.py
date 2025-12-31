@@ -216,9 +216,9 @@ Provide practical alternatives that maintain flavor and texture. Always respond 
 Your goal is to suggest 5 specific, authentic dishes that match the user's filters perfectly.
 
 Respond in strict JSON format:
-{
+{{
   "results": [
-    {
+    {{
       "title": "Emoji + Dish Name",
       "intro": "Brief engaging intro (1 line)",
       "cultural_context": "Cultural or historical significance of this dish (1-2 lines)",
@@ -226,9 +226,9 @@ Respond in strict JSON format:
       "highlights": ["Key ingredients or features"],
       "region": "Specific region/origin name",
       "image_keywords": "2-3 keywords for a realistic food photo search"
-    }
+    }}
   ]
-}"""),
+}}"""),
             ("human", f"Discover 5 unique dishes matching these criteria: {filter_str}")
         ])
 
