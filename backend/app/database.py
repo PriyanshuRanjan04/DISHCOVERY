@@ -11,12 +11,14 @@ db = Database()
 async def connect_to_mongo():
     """Connect to MongoDB"""
     print("Connecting to MongoDB...")
-    # For mongodb+srv strings, certifi is best used as a fallback if system certs fail
+    
+    # Simple connection for Atlas. 
+    # SSL/TLS is handled automatically for srv strings.
     db.client = AsyncIOMotorClient(
         settings.mongodb_uri,
-        tlsCAFile=certifi.where(),
         connectTimeoutMS=10000,
-        serverSelectionTimeoutMS=10000
+        serverSelectionTimeoutMS=10000,
+        tls=True
     )
     db.db = db.client[settings.mongodb_db_name]
     # Verify connection
