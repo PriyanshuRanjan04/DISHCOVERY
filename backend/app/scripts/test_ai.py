@@ -13,23 +13,21 @@ async def test_ai_connection():
     print(f"--- AI Connection Test ---")
     print(f"Provider: {settings.llm_provider}")
     
-    # Check if key exists for the chosen provider
-    key_found = False
-    if settings.llm_provider == "gemini" and settings.gemini_api_key:
-        key_found = True
-        print("Gemini API Key: [FOUND]")
-    elif settings.llm_provider == "openai" and settings.openai_api_key:
-        key_found = True
-        print("OpenAI API Key: [FOUND]")
-    elif settings.llm_provider == "groq" and settings.groq_api_key:
-        key_found = True
-        print("Groq API Key: [FOUND]")
+    import google.generativeai as genai
+    genai.configure(api_key=settings.gemini_api_key)
     
-    if not key_found:
-        print(f"ERROR: API key for {settings.llm_provider} is missing!")
-        return
+    print("\nListing ALL available models for your API key:")
+    try:
+        for m in genai.list_models():
+            if 'generateContent' in m.supported_generation_methods:
+                print(f"- {m.name} (Supports generateContent)")
+            else:
+                print(f"- {m.name}")
+    except Exception as e:
+        print(f"Could not list models: {str(e)}")
 
     service = LangChainService()
+    # ... rest of the script
     
     try:
         print(f"Attempting to generate a sample recipe...")
