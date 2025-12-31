@@ -169,8 +169,8 @@ export default function CuisineExplorerPage() {
                                     Cuisine <span className="text-primary">Explorer</span>
                                 </h1>
                             </div>
-                            <p className="text-xl text-gray-600 dark:text-gray-400 max-w-2xl leading-relaxed">
-                                Discover dishes by Country, Indian States <span className="text-orange-500">🔥</span>, and Festivals using AI-powered smart discovery.
+                            <p className="text-xl text-gray-600 dark:text-gray-400 max-w-4xl leading-relaxed font-medium">
+                                Discover what the world cooks country by country, state by state, and festival by festival.
                             </p>
                         </div>
                     </div>
