@@ -7,6 +7,7 @@ import Link from 'next/link'
 import { Timer, Users, ChefHat, ArrowLeft, Loader2, Heart, Check, Sparkles } from 'lucide-react'
 import { useUser } from '@clerk/nextjs'
 import SubstitutionHandler from '@/components/SubstitutionHandler'
+import LoadingTrivia from '@/components/LoadingTrivia'
 
 export default function SearchPage() {
     const searchParams = useSearchParams()
@@ -151,14 +152,13 @@ export default function SearchPage() {
 
     if (loading) {
         return (
-            <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 dark:bg-gray-900">
-                <Loader2 className="w-12 h-12 text-primary animate-spin mb-4" />
-                <h2 className="text-xl font-semibold text-gray-700 dark:text-gray-300">
+            <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 dark:bg-gray-900 p-4">
+                <Loader2 className="w-16 h-16 text-primary animate-spin mb-6" />
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
                     {statusMessage}
                 </h2>
-                <p className="text-gray-500 mt-2 text-center max-w-sm px-4">
-                    Our AI chef is crafting every detail. This usually takes 10-20 seconds.
-                </p>
+
+                <LoadingTrivia />
             </div>
         )
     }
