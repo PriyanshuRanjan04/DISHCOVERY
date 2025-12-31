@@ -62,6 +62,7 @@ export default function Navbar() {
 
                     {/* Right Side: Profile/Sign In */}
                     <div className="flex items-center space-x-4">
+                        <ThemeToggle />
                         <SignedIn>
                             <UserButton
                                 afterSignOutUrl="/"
