@@ -107,6 +107,14 @@ async def get_blog_posts(limit: int = 5, skip: int = 0):
             "count": len(db_stories),
             "source": "generated"
         }
+    except Exception as e:
+        print(f"Error in blog posts: {str(e)}")
+        return {
+            "success": True,
+            "posts": fallback,
+            "count": len(fallback),
+            "error": str(e)
+        }
         
 @router.get("/explore")
 async def explore_cuisines(
