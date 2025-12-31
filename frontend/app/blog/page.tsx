@@ -8,6 +8,8 @@ import { PdfExport } from '@/components/PdfExport'
 import { ShareButtons } from '@/components/ShareButtons'
 import ExplorerLoader from '@/components/ExplorerLoader'
 
+import LoadingTrivia from '@/components/LoadingTrivia'
+
 const TASTE_CHIPS = [
     { label: "🌶️ Spicy", value: "spicy" },
     { label: "🍬 Sweet", value: "sweet" },
@@ -17,9 +19,43 @@ const TASTE_CHIPS = [
     { label: "🥗 Healthy", value: "healthy" }
 ]
 
-const SUGGESTED_COUNTRIES = ["Italy", "Japan", "Mexico", "Thailand", "India", "France", "China", "Greece", "Spain", "Lebanon"]
-const SUGGESTED_STATES = ["Punjab", "Kerala", "West Bengal", "Tamil Nadu", "Maharashtra", "Rajasthan", "Gujarat", "Karnataka", "Assam", "Goa"]
-const SUGGESTED_FESTIVALS = ["Diwali", "Eid", "Holi", "Christmas", "Pongal", "Onam", "Lunar New Year", "Thanksgiving"]
+const SUGGESTED_COUNTRIES = [
+    "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Antigua and Barbuda", "Argentina", "Armenia", "Australia", "Austria",
+    "Azerbaijan", "Bahamas", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan",
+    "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei", "Bulgaria", "Burkina Faso", "Burundi", "Cabo Verde", "Cambodia",
+    "Cameroon", "Canada", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Congo", "Costa Rica",
+    "Croatia", "Cuba", "Cyprus", "Czech Republic", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt",
+    "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Fiji", "Finland", "France", "Gabon",
+    "Gambia", "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guyana", "Haiti",
+    "Honduras", "Hungary", "Iceland", "India", "Indonesia", "Iran", "Iraq", "Ireland", "Israel", "Italy",
+    "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Korea, North", "Korea, South", "Kosovo", "Kuwait",
+    "Kyrgyzstan", "Laos", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Liechtenstein", "Lithuania", "Luxembourg",
+    "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico",
+    "Micronesia", "Moldova", "Monaco", "Mongolia", "Montenegro", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru",
+    "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Macedonia", "Norway", "Oman", "Pakistan",
+    "Palau", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Qatar", "Romania",
+    "Russia", "Rwanda", "Saint Kitts and Nevis", "Saint Lucia", "Saint Vincent and the Grenadines", "Samoa", "San Marino", "Sao Tome and Principe", "Saudi Arabia", "Senegal",
+    "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovakia", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Sudan",
+    "Spain", "Sri Lanka", "Sudan", "Suriname", "Sweden", "Switzerland", "Syria", "Taiwan", "Tajikistan", "Tanzania",
+    "Thailand", "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkey", "Turkmenistan", "Tuvalu", "Uganda",
+    "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Uruguay", "Uzbekistan", "Vanuatu", "Vatican City", "Venezuela", "Vietnam",
+    "Yemen", "Zambia", "Zimbabwe"
+]
+
+const SUGGESTED_STATES = [
+    "Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar", "Chhattisgarh", "Goa", "Gujarat", "Haryana", "Himachal Pradesh", "Jharkhand",
+    "Karnataka", "Kerala", "Madhya Pradesh", "Maharashtra", "Manipur", "Meghalaya", "Mizoram", "Nagaland", "Odisha", "Punjab",
+    "Rajasthan", "Sikkim", "Tamil Nadu", "Telangana", "Tripura", "Uttar Pradesh", "Uttarakhand", "West Bengal",
+    "Andaman and Nicobar Islands", "Chandigarh", "Dadra and Nagar Haveli and Daman and Diu", "Delhi", "Jammu and Kashmir", "Ladakh", "Lakshadweep", "Puducherry"
+]
+
+const SUGGESTED_FESTIVALS = [
+    "Diwali", "Eid al-Fitr", "Eid al-Adha", "Holi", "Christmas", "Hanukkah", "Lunar New Year", "Thanksgiving", "Ramadan", "Easter",
+    "Ganesh Chaturthi", "Durga Puja", "Navratri", "Pongal", "Onam", "Baisakhi", "Bihu", "Makar Sankranti", "Raksha Bandhan", "Janmashtami",
+    "Oktoberfest", "Carnival", "Dia de los Muertos", "Saint Patrick's Day", "Basni", "Mardi Gras", "Songkran", "Loy Krathong", "Vesak", "Diwali",
+    "Gothic Festival", "Dragon Boat Festival", "Mid-Autumn Festival", "Sechseläuten", "Fasching", "La Tomatina", "Burning Man", "Coachella", "Glastonbury", "Inti Raymi",
+    "Up Helly Aa", "Hogmanay", "Grito de Dolores", "Kwanzaa", "Winter Solstice", "Summer Solstice", "Beltane", "Samhain", "Lughnasadh", "Imbolc"
+]
 
 export default function CuisineExplorerPage() {
     // Featured Posts state
@@ -252,7 +288,7 @@ export default function CuisineExplorerPage() {
                             <button
                                 type="button"
                                 onClick={clearFilters}
-                                className="px-8 py-4 bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 font-bold rounded-2xl hover:bg-gray-200 dark:hover:bg-gray-600 transition-all flex items-center justify-center gap-2"
+                                className="px-8 py-4 bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 font-bold rounded-2xl hover:bg-gray-200 dark:hover:bg-gray-200 transition-all flex items-center justify-center gap-2"
                             >
                                 <X className="w-5 h-5" />
                                 CLEAR
@@ -260,6 +296,19 @@ export default function CuisineExplorerPage() {
                         )}
                     </div>
                 </form>
+
+                {/* Loading Trivia Section */}
+                {!isExploring && !searchResults && (
+                    <div className="flex justify-center mt-12 px-4">
+                        <div className="max-w-2xl w-full text-center space-y-4">
+                            <h3 className="text-gray-400 dark:text-gray-500 text-sm font-bold uppercase tracking-widest flex items-center justify-center gap-2">
+                                <Sparkles className="w-4 h-4" />
+                                Pro Tip: Pick from our smart lists or type your own!
+                            </h3>
+                            <LoadingTrivia />
+                        </div>
+                    </div>
+                )}
             </div>
 
             {/* Results Section */}
