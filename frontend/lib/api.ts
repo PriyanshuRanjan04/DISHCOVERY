@@ -38,10 +38,10 @@ export const recipeAPI = {
         return response.data
     },
 
-    getAlternatives: async (ingredient: string, recipeContext: string) => {
+    getAlternatives: async (ingredient: string, recipe_context: string) => {
         const response = await apiClient.post('/api/recipes/alternatives', {
             ingredient,
-            recipeContext,
+            recipe_context,
         })
         return response.data
     },

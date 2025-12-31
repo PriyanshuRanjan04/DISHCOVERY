@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { Sparkles, Loader2, RefreshCw, X, Check } from 'lucide-react'
+import { recipeAPI } from '@/lib/api'
 
 interface Alternative {
     name: string
@@ -27,22 +28,15 @@ export default function SubstitutionHandler({ ingredients, recipeContext, onSubs
         setError('')
         setAlternatives([])
         try {
-            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/recipes/alternatives`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    ingredient: ingredient,
-                    recipe_context: recipeContext
-                })
-            })
-            const data = await response.json()
-            if (data.success && data.alternatives.length > 0) {
+            const data = await recipeAPI.getAlternatives(ingredient, recipeContext)
+
+            if (data.success && data.alternatives && data.alternatives.length > 0) {
                 setAlternatives(data.alternatives)
             } else {
-                setError('No substitutes found for this ingredient.')
+                setError('Our AI chefs couldn\'t find a suitable substitute for this specific ingredient in this recipe.')
             }
         } catch (err) {
-            setError('Failed to fetch alternatives.')
+            setError('Failed to fetch alternatives. Please try again later.')
         } finally {
             setLoading(false)
         }

@@ -278,52 +278,52 @@ export default function SearchPage() {
                                         </li>
                                     ))}
                                 </ul>
-
-                                <SubstitutionHandler
-                                    ingredients={recipe.ingredients}
-                                    recipeContext={recipe.title + " " + recipe.description}
-                                    onSubstitute={handleSubstitute}
-                                />
+                            </div>
+                            <div>
+                                <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
+                                    Instructions
+                                </h3>
+                                <ol className="space-y-6">
+                                    {recipe.instructions.map((step: string, i: number) => (
+                                        <li key={i} className="flex">
+                                            <span className="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full bg-primary/10 text-primary font-bold mr-4">
+                                                {i + 1}
+                                            </span>
+                                            <p className="text-gray-700 dark:text-gray-300 mt-1">
+                                                {step}
+                                            </p>
+                                        </li>
+                                    ))}
+                                </ol>
                             </div>
                         </div>
 
-                        <div>
-                            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
-                                Instructions
-                            </h3>
-                            <ol className="space-y-6">
-                                {recipe.instructions.map((step: string, i: number) => (
-                                    <li key={i} className="flex">
-                                        <span className="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full bg-primary/10 text-primary font-bold mr-4">
-                                            {i + 1}
-                                        </span>
-                                        <p className="text-gray-700 dark:text-gray-300 mt-1">
-                                            {step}
-                                        </p>
-                                    </li>
-                                ))}
-                            </ol>
+                        <div className="mt-8 pt-8 border-t border-gray-100 dark:border-gray-700">
+                            <SubstitutionHandler
+                                ingredients={recipe.ingredients}
+                                recipeContext={recipe.title + " " + recipe.description}
+                                onSubstitute={handleSubstitute}
+                            />
                         </div>
-                    </div>
 
-                    {recipe.tips && recipe.tips.length > 0 && (
-                        <div className="mt-12 bg-yellow-50 dark:bg-yellow-900/10 p-6 rounded-xl border border-yellow-100 dark:border-yellow-900/30">
-                            <h3 className="text-lg font-bold text-yellow-800 dark:text-yellow-500 mb-3">
-                                Chef's Tips
-                            </h3>
-                            <ul className="space-y-2">
-                                {recipe.tips.map((tip: string, i: number) => (
-                                    <li key={i} className="flex items-start text-yellow-700 dark:text-yellow-400">
-                                        <span className="mr-2">•</span>
-                                        {tip}
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
-                    )}
+                        {recipe.tips && recipe.tips.length > 0 && (
+                            <div className="mt-12 bg-yellow-50 dark:bg-yellow-900/10 p-6 rounded-xl border border-yellow-100 dark:border-yellow-900/30">
+                                <h3 className="text-lg font-bold text-yellow-800 dark:text-yellow-500 mb-3">
+                                    Chef's Tips
+                                </h3>
+                                <ul className="space-y-2">
+                                    {recipe.tips.map((tip: string, i: number) => (
+                                        <li key={i} className="flex items-start text-yellow-700 dark:text-yellow-400">
+                                            <span className="mr-2">•</span>
+                                            {tip}
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+                        )}
+                    </div>
                 </div>
             </div>
         </div>
-        </div >
     )
 }
