@@ -545,13 +545,20 @@ export default function HomePage() {
                         </Link>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 auto-rows-[minmax(320px,auto)] grid-flow-dense">
                         {popularRecipes.length > 0 ? (
-                            popularRecipes.map((recipe, i) => (
-                                <Link key={i} href={`/search?q=${encodeURIComponent(recipe.title)}&popularId=${recipe.id}`}>
-                                    <RecipeCard recipe={recipe} />
-                                </Link>
-                            ))
+                            popularRecipes.map((recipe, i) => {
+                                const isFeatured = i % 7 === 0
+                                return (
+                                    <Link
+                                        key={i}
+                                        href={`/search?q=${encodeURIComponent(recipe.title)}&popularId=${recipe.id}`}
+                                        className={`${isFeatured ? 'md:col-span-2 md:row-span-2' : ''} group`}
+                                    >
+                                        <RecipeCard recipe={recipe} featured={isFeatured} />
+                                    </Link>
+                                )
+                            })
                         ) : (
                             // Show placeholders while loading
                             [1, 2, 3, 4].map((i) => <RecipeCardPlaceholder key={i} />)
@@ -578,25 +585,32 @@ function FeatureCard({ icon, title, description, onClick }: { icon: React.ReactN
     )
 }
 
-function RecipeCard({ recipe }: { recipe: any }) {
+function RecipeCard({ recipe, featured }: { recipe: any, featured?: boolean }) {
     return (
-        <div className="glass rounded-2xl overflow-hidden card-hover cursor-pointer group h-full flex flex-col">
-            <div className="h-48 relative overflow-hidden shrink-0">
+        <div className={`glass rounded-2xl overflow-hidden card-hover cursor-pointer group h-full flex flex-col ${featured ? 'md:col-span-2 md:row-span-2' : ''}`}>
+            <div className={`relative overflow-hidden shrink-0 ${featured ? 'h-96' : 'h-48'}`}>
                 <img
                     src={recipe.image_url || recipe.image || `https://loremflickr.com/800/600/food,${recipe.title.replace(/\s+/g, ',')},${recipe.cuisine}`}
                     alt={recipe.title}
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                 />
-                <div className="absolute top-2 right-2 bg-white/90 backdrop-blur px-2 py-1 rounded-lg text-xs font-semibold text-gray-700">
-                    {recipe.cooking_time} min
+                <div className="absolute top-2 right-2 bg-white/90 backdrop-blur px-3 py-1.5 rounded-xl text-xs font-black text-gray-700 shadow-sm flex items-center gap-1">
+                    <Clock className="w-3.5 h-3.5 text-primary" /> {recipe.cooking_time} min
                 </div>
+                {featured && (
+                    <div className="absolute top-2 left-2 bg-primary/90 backdrop-blur px-3 py-1.5 rounded-xl text-xs font-black text-white shadow-sm flex items-center gap-1 uppercase tracking-wider">
+                        <Sparkles className="w-3.5 h-3.5" /> Featured
+                    </div>
+                )}
             </div>
-            <div className="p-4 flex flex-col flex-grow">
-                <h3 className="font-bold text-gray-900 dark:text-white mb-1 truncate">{recipe.title}</h3>
-                <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-2 mb-3 flex-grow">{recipe.description}</p>
-                <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400 mt-auto">
-                    <span className="capitalize px-2 py-1 bg-gray-100 dark:bg-gray-800 rounded-full">{recipe.cuisine}</span>
-                    <span className="capitalize px-2 py-1 bg-gray-100 dark:bg-gray-800 rounded-full">{recipe.difficulty}</span>
+            <div className={`p-5 flex flex-col flex-grow relative ${featured ? 'gap-2' : ''}`}>
+                <h3 className={`font-black text-gray-900 dark:text-white mb-1 truncate leading-tight ${featured ? 'text-2xl mt-1' : 'text-lg'}`}>{recipe.title}</h3>
+                <p className={`text-sm text-gray-600 dark:text-gray-400 line-clamp-2 flex-grow font-medium leading-relaxed ${featured ? 'text-base line-clamp-3' : ''}`}>{recipe.description}</p>
+                <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400 mt-4 border-t border-gray-100 dark:border-gray-700 pt-4">
+                    <span className="capitalize px-3 py-1 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-100 dark:border-gray-700 font-bold tracking-wide">{recipe.cuisine}</span>
+                    <span className={`capitalize px-3 py-1 rounded-lg border font-bold tracking-wide ${recipe.difficulty === 'Easy' ? 'bg-green-50 text-green-700 border-green-100' :
+                            recipe.difficulty === 'Medium' ? 'bg-orange-50 text-orange-700 border-orange-100' : 'bg-red-50 text-red-700 border-red-100'
+                        }`}>{recipe.difficulty}</span>
                 </div>
             </div>
         </div>
