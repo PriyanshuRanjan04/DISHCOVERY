@@ -32,7 +32,19 @@ async def get_blog_posts(limit: int = 5, skip: int = 0):
         {
             "_id": "fb1",
             "title": "🥘 The Story Behind Butter Chicken",
-            "content": "Did you know that Butter Chicken was created by accident? In the 1950s, at the Moti Mahal restaurant in Delhi, cooks would reuse leftover tandoori chicken by simmering it in a rich tomato, butter, and cream sauce.",
+            "intro": "A dish that conquered the world from the heart of Delhi.",
+            "why_it_matters": "It represents the resourcefulness of Indian chefs in reinventing leftovers into a global sensation.",
+            "history_content": "Created by accident in the 1950s at Moti Mahal restaurant, cooks reused leftover tandoori chicken by simmering it in a rich tomato and butter sauce.",
+            "recipe_ingredients": [
+                {"name": "Chicken", "quantity": "1", "unit": "kg"},
+                {"name": "Tomato Puree", "quantity": "2", "unit": "cups"},
+                {"name": "Butter", "quantity": "100", "unit": "g"}
+            ],
+            "recipe_instructions": ["Marinate chicken", "Prepare sauce", "Simmer until tender"],
+            "tips_variations": ["Use honey for sweetness", "Add more cream for richness"],
+            "conclusion": "A timeless classic that never fails to satisfy.",
+            "image_url": "https://images.unsplash.com/photo-1603894584202-7473796599b1?w=800&q=80",
+            "region": "Asia",
             "author_name": "Dishcovery Team",
             "created_at": datetime.utcnow(),
             "tags": ["Indian", "History"]
@@ -65,7 +77,14 @@ async def get_blog_posts(limit: int = 5, skip: int = 0):
         for story in new_stories_data:
             story_doc = {
                 "title": story["title"],
-                "content": story["content"],
+                "intro": story.get("intro", ""),
+                "why_it_matters": story.get("why_it_matters", ""),
+                "history_content": story.get("history_content", ""),
+                "recipe_ingredients": story.get("recipe", {}).get("ingredients", []),
+                "recipe_instructions": story.get("recipe", {}).get("instructions", []),
+                "tips_variations": story.get("tips_variations", []),
+                "conclusion": story.get("conclusion", ""),
+                "image_url": story.get("image_url", ""),
                 "region": story["region"],
                 "tags": story["tags"],
                 "author_name": "Dishcovery Team",

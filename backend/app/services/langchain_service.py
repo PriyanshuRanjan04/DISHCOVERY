@@ -192,34 +192,49 @@ Provide practical alternatives that maintain flavor and texture. Always respond 
         return adjusted_recipe
 
     async def generate_daily_stories(self) -> list:
-        """Generate 5 daily food history stories from different regions"""
+        """Generate 5 daily food history stories from different regions with recipes"""
         if not self.llm:
             raise RuntimeError("LLM is not initialized.")
 
         regions = ["Asia", "Europe", "Africa", "Americas", "Middle East/Oceania"]
         
         prompt = ChatPromptTemplate.from_messages([
-            ("system", f"""You are a culinary historian for 'Dishcovery'. 
+            ("system", f"""You are a culinary historian and master chef for 'Dishcovery'. 
 Generate exactly 5 fascinating food history stories. 
 Each story MUST be from a different region: {', '.join(regions)}.
 
-Focus on:
-1. The history and origin of a specific dish.
-2. How the food is mood/prepared in that specific region.
-3. Cultural significance.
+For each story, follow this EXACT structure:
+1. Title: Emoji + Catchy Title
+2. Short Intro: 2-3 lines engaging the reader.
+3. Why this matters: The cultural or historical significance.
+4. History Content: 1-2 paragraphs of deep history/fun facts.
+5. Recipe: A full practical recipe for 4 people.
+6. Tips & Variations: Pro tips or common regional twists.
+7. Conclusion: A final thought.
+8. Image Keywords: 2-3 keywords for a realistic food photo search.
 
 Respond in strict JSON format:
 {{
   "stories": [
     {{
-      "title": "Emoji + Catchy Title",
-      "content": "Detailed 3-4 sentence historical story",
-      "region": "Region Name",
-      "tags": ["Tag1", "Tag2"]
+      "title": "str",
+      "intro": "str",
+      "why_it_matters": "str",
+      "history_content": "str",
+      "recipe": {{
+        "name": "str",
+        "ingredients": [{{"name": "str", "quantity": "str", "unit": "str"}}],
+        "instructions": ["str"]
+      }},
+      "tips_variations": ["str"],
+      "conclusion": "str",
+      "region": "str",
+      "tags": ["str"],
+      "image_keywords": "str"
     }}
   ]
 }}"""),
-            ("human", "Generate today's 5 global food stories.")
+            ("human", "Generate today's 5 global food stories with recipes for 4 people.")
         ])
         
         chain = prompt | self.llm
@@ -232,7 +247,15 @@ Respond in strict JSON format:
         else:
             data = json.loads(content)
         
-        return data.get("stories", [])
+        stories = data.get("stories", [])
+        
+        # Add realistic image URLs using Unsplash
+        for story in stories:
+            keywords = story.get("image_keywords", "food")
+            # Use unsplash source with keywords
+            story["image_url"] = f"https://source.unsplash.com/featured/800x600?food,{keywords.replace(' ', ',')}"
+            
+        return stories
 
 # Singleton instance
 langchain_service = LangChainService()

@@ -90,7 +90,7 @@ export default function SavedPage() {
                             return (
                                 <Link
                                     key={item.id}
-                                    href={`/search?q=${encodeURIComponent(recipe.title)}`}
+                                    href={`/search?q=${encodeURIComponent(recipe.title)}&savedId=${item.id}`}
                                     className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm hover:shadow-md transition-shadow overflow-hidden group relative"
                                 >
                                     <div className="h-48 bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center relative">

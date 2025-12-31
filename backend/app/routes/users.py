@@ -103,3 +103,24 @@ async def delete_saved_recipe(recipe_id: str, user_id: str):
         "success": True,
         "message": "Recipe deleted successfully"
     }
+@router.get("/saved-recipes/{recipe_id}")
+async def get_saved_recipe(recipe_id: str, user_id: str):
+    """Get a single saved recipe by ID"""
+    db = get_database()
+    from bson import ObjectId
+    
+    recipe = await db.saved_recipes.find_one({
+        "_id": ObjectId(recipe_id),
+        "user_id": user_id
+    })
+    
+    if not recipe:
+        raise HTTPException(status_code=404, detail="Saved recipe not found")
+    
+    recipe["id"] = str(recipe["_id"])
+    del recipe["_id"]
+    
+    return {
+        "success": True,
+        "recipe": recipe
+    }

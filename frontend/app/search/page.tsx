@@ -11,6 +11,7 @@ export default function SearchPage() {
     const searchParams = useSearchParams()
     const query = searchParams.get('q')
     const popularId = searchParams.get('popularId')
+    const savedId = searchParams.get('savedId')
     const { user, isLoaded: isUserLoaded } = useUser()
     const [loading, setLoading] = useState(true)
     const [recipe, setRecipe] = useState<any>(null)
@@ -24,9 +25,21 @@ export default function SearchPage() {
         let pollTimer: NodeJS.Timeout
 
         const fetchRecipe = async () => {
-            if ((!query && !popularId) || !isUserLoaded) return
+            if ((!query && !popularId && !savedId) || !isUserLoaded) return
             try {
                 setLoading(true)
+
+                // If it's a saved recipe, fetch from user's collection
+                if (savedId && user) {
+                    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/users/saved-recipes/${savedId}?user_id=${user.id}`)
+                    const data = await response.json()
+                    if (data.success) {
+                        setRecipe(data.recipe.recipe_data)
+                        setIsSaved(true)
+                        setLoading(false)
+                        return
+                    }
+                }
 
                 // If it's a popular recipe click, fetch directly
                 if (popularId) {
